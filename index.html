@@ -4,250 +4,473 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>情侣匹配度深度测评 - 12维度60题</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js">
+</script>
 <style>
 :root {
-  --bg: #0a0a12;
-  --card: #141420;
-  --border: #252538;
-  --text: #e8e8f0;
-  --text2: #8888a0;
-  --pink: #ff5277;
-  --pink-light: #ff7b9b;
-  --purple: #8b6ff7;
-  --blue: #5ea3f7;
-  --gold: #ffb74d;
-  --green: #66d9a0;
-  --dim-1:#ff5277;--dim-2:#ff7b50;--dim-3:#ffb74d;--dim-4:#ffd54f;
-  --dim-5:#66d9a0;--dim-6:#4dd0e1;--dim-7:#5ea3f7;--dim-8:#8b6ff7;
-  --dim-9:#b388ff;--dim-10:#f06292;--dim-11:#4db6ac;--dim-12:#ff8a65;
+  --bg: #fff5f5;
+  --bg2: #fff0f3;
+  --card: #ffffff;
+  --border: #f0d5db;
+  --border2: #fce4ec;
+  --text: #4a3340;
+  --text2: #9b7b89;
+  --text3: #c4a6b2;
+  --pink: #ff6b8a;
+  --pink2: #ff8fa3;
+  --pink-light: #fff0f3;
+  --coral: #ff8a80;
+  --purple: #b39ddb;
+  --purple2: #9575cd;
+  --blue: #81d4fa;
+  --blue2: #4fc3f7;
+  --green: #a5d6a7;
+  --green2: #66bb6a;
+  --gold: #ffcc80;
+  --gold2: #ffa726;
+  --rose: #f8bbd0;
+  --peach: #ffccbc;
+  --lavender: #e1bee7;
+  --mint: #c8e6c9;
+  --sky: #b3e5fc;
+  --shadow: 0 2px 16px rgba(255,107,138,0.08);
+  --shadow-lg: 0 8px 40px rgba(255,107,138,0.12);
+  --radius: 20px;
+  --radius-sm: 12px;
+  --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
 }
 *{margin:0;padding:0;box-sizing:border-box;}
+
 body{
-  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
-  background:var(--bg);color:var(--text);line-height:1.7;
-  min-height:100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', sans-serif;
+  background: linear-gradient(180deg, #fff5f5 0%, #fff0f3 30%, #fce4ec 60%, #fff5f5 100%);
+  background-attachment: fixed;
+  color: var(--text); line-height: 1.7;
+  min-height: 100vh;
 }
-body.overflow-hidden{overflow:hidden;}
+
+/* ===== Particles ===== */
+.particles {
+  position: fixed; top:0; left:0; width:100%; height:100%;
+  pointer-events: none; z-index:0; overflow:hidden;
+}
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  animation: floatUp 12s ease-in infinite;
+  opacity: 0.35;
+}
+.particle:nth-child(1){width:30px;height:30px;left:10%;background:var(--rose);animation-delay:0s;animation-duration:14s;}
+.particle:nth-child(2){width:20px;height:20px;left:25%;background:var(--peach);animation-delay:2s;animation-duration:11s;}
+.particle:nth-child(3){width:24px;height:24px;left:40%;background:var(--lavender);animation-delay:4s;animation-duration:13s;}
+.particle:nth-child(4){width:18px;height:18px;left:55%;background:var(--sky);animation-delay:1s;animation-duration:15s;}
+.particle:nth-child(5){width:28px;height:28px;left:70%;background:var(--mint);animation-delay:3s;animation-duration:10s;}
+.particle:nth-child(6){width:22px;height:22px;left:85%;background:var(--rose);animation-delay:5s;animation-duration:12s;}
+.particle:nth-child(7){width:16px;height:16px;left:5%;background:var(--gold);animation-delay:6s;animation-duration:16s;}
+.particle:nth-child(8){width:26px;height:26px;left:50%;background:var(--peach);animation-delay:7s;animation-duration:9s;}
+@keyframes floatUp {
+  0%{transform:translateY(100vh) scale(0) rotate(0deg);opacity:0;}
+  10%{opacity:0.35;}
+  90%{opacity:0.35;}
+  100%{transform:translateY(-10vh) scale(1) rotate(360deg);opacity:0;}
+}
+
+/* ===== Containers ===== */
+.container {position:relative;z-index:1;max-width:720px;margin:0 auto;padding:20px 16px 80px;}
+
+/* ===== Cards ===== */
+.card {
+  background:var(--card);border-radius:var(--radius);
+  box-shadow:var(--shadow);border:1px solid var(--border2);
+  padding:28px 24px;margin-bottom:20px;
+  transition:var(--transition);
+}
+.card:hover {box-shadow:var(--shadow-lg);}
+.card-header {
+  display:flex;align-items:center;gap:12px;margin-bottom:20px;
+  padding-bottom:16px;border-bottom:1px solid var(--border2);
+}
+.card-header .ch-icon {font-size:1.5rem;}
+.card-header .ch-title {font-size:1.1rem;font-weight:700;color:var(--text);}
 
 /* ===== INTRO PAGE ===== */
-.intro-page{
+.intro-wrap {
   min-height:100vh;display:flex;align-items:center;justify-content:center;
-  padding:24px;position:relative;overflow:hidden;
+  padding:24px;position:relative;z-index:1;
 }
-.intro-page::before{
-  content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;
-  background:radial-gradient(circle at 30% 30%,rgba(255,82,119,0.06) 0%,transparent 50%),
-             radial-gradient(circle at 70% 60%,rgba(139,111,247,0.06) 0%,transparent 50%);
-  animation:bgFloat 20s ease-in-out infinite;
+.intro-card {
+  background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow-lg);
+  border:1px solid var(--border2);padding:48px 36px;max-width:520px;width:100%;
+  text-align:center;position:relative;overflow:hidden;
 }
-@keyframes bgFloat{0%,100%{transform:translate(0,0)}50%{transform:translate(-2%,2%)}}
-.intro-card{
-  position:relative;background:var(--card);border:1px solid var(--border);
-  border-radius:24px;padding:48px 40px;max-width:560px;width:100%;
-  text-align:center;backdrop-filter:blur(20px);
+.intro-card::before {
+  content:'';position:absolute;top:-60px;right:-60px;
+  width:160px;height:160px;border-radius:50%;
+  background:var(--rose);opacity:0.3;
 }
-.intro-card .icon{font-size:3.5rem;margin-bottom:16px;}
-.intro-card h1{
-  font-size:1.8rem;font-weight:800;margin-bottom:8px;
-  background:linear-gradient(135deg,var(--pink),var(--purple),var(--blue));
+.intro-card::after {
+  content:'';position:absolute;bottom:-40px;left:-40px;
+  width:120px;height:120px;border-radius:50%;
+  background:var(--lavender);opacity:0.25;
+}
+.intro-card .hero-icon {
+  font-size:4rem;margin-bottom:12px;position:relative;z-index:2;
+  animation:heartBeat 1.6s ease-in-out infinite;
+}
+@keyframes heartBeat {
+  0%,100%{transform:scale(1);}
+  15%{transform:scale(1.15);}
+  30%{transform:scale(1);}
+  45%{transform:scale(1.1);}
+  60%{transform:scale(1);}
+}
+.intro-card h1 {
+  font-size:1.7rem;font-weight:800;margin-bottom:8px;position:relative;z-index:2;
+  background:linear-gradient(135deg, var(--pink), var(--coral), var(--purple2));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
-.intro-card .subtitle{color:var(--text2);font-size:0.95rem;margin-bottom:28px;}
-.intro-card .features{
-  display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:28px;
+.intro-card .subtitle {color:var(--text2);font-size:0.92rem;margin-bottom:24px;position:relative;z-index:2;line-height:1.8;}
+.intro-features {
+  display:flex;flex-wrap:wrap;gap:8px;justify-content:center;
+  margin-bottom:28px;position:relative;z-index:2;
 }
-.intro-card .feature{
-  padding:8px 16px;border-radius:20px;font-size:0.82rem;
-  background:rgba(255,255,255,0.03);border:1px solid var(--border);
+.intro-feat {
+  padding:7px 14px;border-radius:20px;font-size:0.8rem;font-weight:600;
+  background:var(--pink-light);color:var(--pink);
 }
-.intro-card .feature span{color:var(--pink);font-weight:600;}
-
-.btn{
-  display:inline-block;padding:14px 40px;border-radius:30px;font-size:1.05rem;
-  font-weight:700;cursor:pointer;border:none;transition:all 0.25s;
-  text-decoration:none;color:#fff;
-  background:linear-gradient(135deg,var(--pink),var(--purple));
-  box-shadow:0 4px 24px rgba(255,82,119,0.3);
+.btn {
+  display:inline-block;padding:14px 44px;border-radius:30px;
+  font-size:1.05rem;font-weight:700;cursor:pointer;border:none;
+  transition:var(--transition);text-decoration:none;color:#fff;
+  background:linear-gradient(135deg, var(--pink), var(--pink2));
+  box-shadow:0 4px 20px rgba(255,107,138,0.35);
+  position:relative;z-index:2;
 }
-.btn:hover{transform:translateY(-2px);box-shadow:0 6px 32px rgba(255,82,119,0.45);}
-.btn:active{transform:scale(0.97);}
-.intro-card .note{color:var(--text2);font-size:0.78rem;margin-top:20px;}
+.btn:hover {transform:translateY(-2px);box-shadow:0 8px 30px rgba(255,107,138,0.5);}
+.btn:active {transform:scale(0.97);}
+.btn-outline {
+  display:inline-block;padding:12px 28px;border-radius:30px;
+  font-size:0.92rem;font-weight:600;cursor:pointer;
+  transition:var(--transition);background:#fff;
+  border:2px solid var(--border);color:var(--pink);
+}
+.btn-outline:hover {border-color:var(--pink);background:var(--pink-light);}
+.intro-note {color:var(--text3);font-size:0.78rem;margin-top:20px;position:relative;z-index:2;}
 
 /* ===== TEST PAGE ===== */
-.test-page{display:none;max-width:720px;margin:0 auto;padding:20px 16px 100px;}
-.test-page.active{display:block;}
+.test-page {display:none;}
+.test-page.active {display:block;}
 
-.test-header{
-  position:sticky;top:0;z-index:100;background:var(--bg);
-  padding:16px 0;border-bottom:1px solid var(--border);margin-bottom:24px;
+.test-header {
+  position:sticky;top:0;z-index:100;
+  background:rgba(255,245,245,0.92);backdrop-filter:blur(12px);
+  padding:16px 0;border-bottom:1px solid var(--border2);margin-bottom:20px;
 }
-.test-header .progress-info{
-  display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;
-  font-size:0.85rem;color:var(--text2);
+.progress-info {
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:8px;font-size:0.85rem;color:var(--text2);
 }
-.progress-bar{
-  height:4px;border-radius:2px;background:var(--border);overflow:hidden;
+.progress-bar {
+  height:6px;border-radius:3px;background:var(--border2);overflow:hidden;
 }
-.progress-bar .fill{
-  height:100%;border-radius:2px;
-  background:linear-gradient(90deg,var(--pink),var(--purple));
+.progress-bar .fill {
+  height:100%;border-radius:3px;
+  background:linear-gradient(90deg, var(--pink), var(--coral));
   transition:width 0.3s;
 }
 
-.dim-section{
-  background:var(--card);border:1px solid var(--border);border-radius:16px;
-  padding:24px;margin-bottom:16px;scroll-margin-top:100px;
+.dim-section {
+  background:var(--card);border-radius:var(--radius);
+  box-shadow:var(--shadow);border:1px solid var(--border2);
+  padding:24px;margin-bottom:14px;scroll-margin-top:100px;
+  transition:var(--transition);
 }
-.dim-section.current{border-color:var(--purple);box-shadow:0 0 24px rgba(139,111,247,0.1);}
-.dim-header{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
-.dim-num{
+.dim-section.current {border-color:var(--purple);box-shadow:0 0 24px rgba(179,157,219,0.15);}
+.dim-section.completed {border-left:3px solid var(--green);}
+.dim-header {
+  display:flex;align-items:center;gap:12px;margin-bottom:6px;
+}
+.dim-num {
   display:flex;align-items:center;justify-content:center;
-  width:36px;height:36px;border-radius:10px;font-weight:800;font-size:0.9rem;
-  color:#fff;flex-shrink:0;
+  width:38px;height:38px;border-radius:12px;
+  font-weight:800;font-size:0.9rem;color:#fff;flex-shrink:0;
 }
-.dim-name{font-size:1.15rem;font-weight:700;}
-.dim-desc{color:var(--text2);font-size:0.82rem;margin-bottom:20px;}
+.dim-name {font-size:1.1rem;font-weight:700;}
+.dim-desc {color:var(--text2);font-size:0.82rem;margin-bottom:20px;}
 
-.question{margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border);}
-.question:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
-.question .q-text{font-size:0.95rem;margin-bottom:10px;font-weight:500;}
-.options{display:flex;gap:8px;flex-wrap:wrap;}
-.option{
-  flex:1;min-width:70px;text-align:center;padding:10px 8px;
-  border-radius:10px;cursor:pointer;font-size:0.82rem;
-  background:rgba(255,255,255,0.02);border:1.5px solid var(--border);
-  transition:all 0.18s;user-select:none;color:var(--text2);
+.question {margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border2);}
+.question:last-child {border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.question .q-text {font-size:0.93rem;margin-bottom:10px;font-weight:500;color:var(--text);}
+.question .q-num {
+  display:inline-block;width:22px;height:22px;border-radius:50%;
+  background:var(--pink-light);color:var(--pink);text-align:center;
+  line-height:22px;font-size:0.72rem;font-weight:700;margin-right:6px;
 }
-.option:hover{border-color:var(--purple);color:var(--text);}
-.option.selected{border-color:var(--purple);background:rgba(139,111,247,0.12);color:var(--text);font-weight:600;}
-.option .opt-label{font-size:0.72rem;color:var(--text2);margin-top:2px;}
+.options {display:flex;gap:6px;flex-wrap:wrap;}
+.option {
+  flex:1;min-width:62px;text-align:center;padding:10px 6px;
+  border-radius:10px;cursor:pointer;font-size:0.8rem;
+  background:var(--pink-light);border:2px solid transparent;
+  transition:var(--transition);user-select:none;color:var(--text2);
+}
+.option:hover {border-color:var(--pink);color:var(--pink);background:#fff;}
+.option.selected {border-color:var(--pink);background:#fff;color:var(--pink);font-weight:700;box-shadow:0 2px 10px rgba(255,107,138,0.15);}
+.option .opt-score {font-weight:700;font-size:0.9rem;display:block;}
+.option .opt-label {font-size:0.68rem;color:var(--text3);margin-top:1px;}
+
+.submit-area {text-align:center;padding:28px 0 60px;}
+.submit-hint {color:var(--text3);font-size:0.8rem;margin-top:10px;}
 
 /* ===== RESULTS PAGE ===== */
-.results-page{display:none;max-width:800px;margin:0 auto;padding:20px 16px 60px;}
-.results-page.active{display:block;}
+.results-page {display:none;}
+.results-page.active {display:block;}
 
-.results-header{
-  text-align:center;padding:32px 0 24px;
-}
-.results-header h2{font-size:1.6rem;margin-bottom:6px;}
-.results-header .score{font-size:3rem;font-weight:800;
-  background:linear-gradient(135deg,var(--pink),var(--purple));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-
-.radar-card{
-  background:var(--card);border:1px solid var(--border);border-radius:20px;
-  padding:24px;margin-bottom:20px;
-}
-.radar-card h3{font-size:1.05rem;margin-bottom:16px;text-align:center;}
-.radar-wrap{position:relative;max-width:560px;margin:0 auto;}
-.radar-wrap canvas{width:100%!important;}
-
-.dim-detail-grid{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;
+/* Score hero */
+.score-hero {
+  text-align:center;padding:36px 24px 28px;
+  background:var(--card);border-radius:var(--radius);
+  box-shadow:var(--shadow);border:1px solid var(--border2);
   margin-bottom:20px;
 }
-.dim-detail{
-  background:var(--card);border:1px solid var(--border);border-radius:14px;
-  padding:16px;text-align:center;
+.score-hero .grade-badge {
+  display:inline-block;width:100px;height:100px;border-radius:50%;
+  background:linear-gradient(135deg, var(--pink), var(--coral));
+  color:#fff;font-size:2.2rem;font-weight:800;line-height:100px;
+  margin-bottom:12px;box-shadow:0 8px 32px rgba(255,107,138,0.3);
 }
-.dim-detail .dd-score{font-size:1.6rem;font-weight:800;margin-bottom:2px;}
-.dim-detail .dd-name{font-size:0.88rem;font-weight:600;margin-bottom:4px;}
-.dim-detail .dd-bar{
-  height:4px;border-radius:2px;background:var(--border);margin-top:8px;overflow:hidden;
+.score-hero .grade-label {font-size:1.3rem;font-weight:700;margin-bottom:4px;}
+.score-hero .grade-desc {color:var(--text2);font-size:0.9rem;max-width:400px;margin:0 auto;line-height:1.8;}
+.score-bar-wrap {
+  display:flex;align-items:center;gap:12px;max-width:400px;margin:16px auto 0;
 }
-.dim-detail .dd-bar .fill{height:100%;border-radius:2px;transition:width 0.6s;}
+.score-bar-bg {
+  flex:1;height:10px;border-radius:5px;background:var(--border2);overflow:hidden;
+}
+.score-bar-fill {
+  height:100%;border-radius:5px;
+  background:linear-gradient(90deg, var(--pink), var(--coral));
+  transition:width 0.8s cubic-bezier(0.4,0,0.2,1);
+}
+.score-bar-label {font-size:0.78rem;color:var(--text2);white-space:nowrap;}
 
-/* Advice */
-.advice-card{
-  background:var(--card);border:1px solid var(--border);border-radius:16px;
-  padding:24px;margin-bottom:16px;
-}
-.advice-card h3{font-size:1.05rem;margin-bottom:12px;}
-.advice-item{display:flex;gap:10px;padding:8px 0;font-size:0.9rem;align-items:flex-start;}
-.advice-item .ai-tag{
-  padding:2px 8px;border-radius:6px;font-size:0.72rem;font-weight:700;flex-shrink:0;
-  margin-top:3px;
-}
-.ai-tag.strength{background:rgba(102,217,160,0.15);color:var(--green);}
-.ai-tag.weakness{background:rgba(255,82,119,0.15);color:var(--pink);}
-.ai-tag.tip{background:rgba(139,111,247,0.15);color:var(--purple);}
+/* Radar */
+.radar-card {margin-bottom:20px;}
 
-.btn-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:24px 0;}
-.btn-outline{
-  display:inline-block;padding:12px 28px;border-radius:30px;font-size:0.95rem;
-  font-weight:600;cursor:pointer;transition:all 0.2s;
-  background:transparent;border:1.5px solid var(--border);color:var(--text);
+/* Dimension analysis cards */
+.dim-analysis-grid {
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;
 }
-.btn-outline:hover{border-color:var(--purple);background:rgba(139,111,247,0.06);}
+@media(max-width:600px){.dim-analysis-grid{grid-template-columns:1fr;}}
 
-.footer{text-align:center;padding:24px;color:var(--text2);font-size:0.75rem;}
+.dim-a-card {
+  background:var(--card);border-radius:var(--radius-sm);
+  box-shadow:var(--shadow);border:1px solid var(--border2);
+  padding:18px 16px;transition:var(--transition);
+}
+.dim-a-card:hover {transform:translateY(-2px);box-shadow:var(--shadow-lg);}
+.dim-a-header {display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.dim-a-name {font-weight:700;font-size:0.92rem;}
+.dim-a-score {
+  font-size:1.4rem;font-weight:800;
+  padding:4px 12px;border-radius:20px;
+}
+.dim-a-bar {
+  height:5px;border-radius:3px;background:var(--border2);margin-bottom:8px;overflow:hidden;
+}
+.dim-a-bar .fill {height:100%;border-radius:3px;transition:width 0.6s;}
+.dim-a-detail {font-size:0.78rem;color:var(--text2);line-height:1.7;}
+.dim-a-detail strong {color:var(--text);}
+
+/* Detailed report sections */
+.report-section {margin-bottom:20px;}
+.report-section .rs-title {
+  font-size:1.05rem;font-weight:700;margin-bottom:12px;
+  display:flex;align-items:center;gap:8px;
+}
+
+/* Strength & growth list */
+.insight-list {list-style:none;}
+.insight-list li {
+  padding:14px 16px;margin-bottom:8px;border-radius:var(--radius-sm);
+  background:var(--card);border:1px solid var(--border2);
+  transition:var(--transition);
+}
+.insight-list li:hover {box-shadow:var(--shadow);}
+.insight-list li .il-header {
+  display:flex;align-items:center;gap:8px;margin-bottom:4px;
+}
+.insight-list li .il-tag {
+  font-size:0.7rem;font-weight:700;padding:3px 10px;border-radius:12px;
+}
+.il-tag.strength {background:var(--mint);color:#2e7d32;}
+.il-tag.growth {background:var(--peach);color:#bf360c;}
+.il-tag.tip {background:var(--lavender);color:#512da8;}
+.insight-list li .il-title {font-weight:700;font-size:0.92rem;}
+.insight-list li .il-desc {font-size:0.82rem;color:var(--text2);margin-top:4px;line-height:1.7;}
+
+/* Couple type card */
+.type-card {
+  background:linear-gradient(135deg, #fff0f3, #fce4ec);
+  border-radius:var(--radius);padding:24px;text-align:center;margin-bottom:20px;
+  border:2px solid var(--rose);
+}
+.type-card .type-name {font-size:1.3rem;font-weight:800;color:var(--pink);margin-bottom:4px;}
+.type-card .type-desc {font-size:0.9rem;color:var(--text2);line-height:1.8;}
+
+/* Overall summary */
+.summary-card {
+  background:linear-gradient(135deg, #fff, var(--pink-light));
+  border-radius:var(--radius);padding:28px 24px;margin-bottom:20px;
+  border:1px solid var(--border2);
+}
+.summary-card .sum-title {font-size:1.1rem;font-weight:700;margin-bottom:12px;}
+.summary-card .sum-text {font-size:0.9rem;color:var(--text);line-height:1.9;}
+
+/* Action plan */
+.action-list {list-style:none;counter-reset:action;}
+.action-list li {
+  counter-increment:action;padding:14px 16px 14px 48px;margin-bottom:8px;
+  border-radius:var(--radius-sm);background:var(--card);
+  border:1px solid var(--border2);position:relative;
+  font-size:0.88rem;line-height:1.7;
+}
+.action-list li::before {
+  content:counter(action);
+  position:absolute;left:14px;top:14px;
+  width:26px;height:26px;border-radius:50%;
+  background:var(--pink-light);color:var(--pink);
+  text-align:center;line-height:26px;font-size:0.8rem;font-weight:800;
+}
+
+/* Footer */
+.footer {
+  text-align:center;padding:24px;color:var(--text3);font-size:0.75rem;
+}
+.footer a {color:var(--pink);text-decoration:none;}
+
+.btn-row {display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:24px 0;}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:600px){
+  .intro-card {padding:36px 20px;}
+  .intro-card h1 {font-size:1.4rem;}
+  .options {gap:4px;}
+  .option {padding:8px 4px;font-size:0.75rem;min-width:50px;}
+  .dim-a-score {font-size:1.2rem;}
+}
 </style>
 </head>
 <body>
 
+<!-- Particles -->
+<div class="particles">
+  <div class="particle"></div><div class="particle"></div>
+  <div class="particle"></div><div class="particle"></div>
+  <div class="particle"></div><div class="particle"></div>
+  <div class="particle"></div><div class="particle"></div>
+</div>
+
 <!-- ==================== INTRO PAGE ==================== -->
-<div class="intro-page" id="introPage">
+<div class="intro-wrap" id="introPage">
   <div class="intro-card">
-    <div class="icon">💞</div>
+    <div class="hero-icon">💞</div>
     <h1>情侣匹配度 · 深度测评</h1>
-    <p class="subtitle">12个维度 × 60道情境题 × 雷达图可视化<br>不只是测"合不合"，而是看清楚"哪里合、哪里需要磨合"</p>
-    <div class="features">
-      <div class="feature"><span>12</span> 全新维度</div>
-      <div class="feature"><span>60</span> 道情境题</div>
-      <div class="feature"><span>雷达图</span> 可视化</div>
-      <div class="feature"><span>2分钟</span> 完成</div>
+    <p class="subtitle">
+      12个全新维度 × 60道情境题<br>
+      不只是测"合不合"，而是看见你们<br>
+      <strong>哪里天生默契、哪里需要温柔磨合</strong>
+    </p>
+    <div class="intro-features">
+      <span class="intro-feat">🔬 12维度</span>
+      <span class="intro-feat">📝 60道情境题</span>
+      <span class="intro-feat">🎯 雷达图</span>
+      <span class="intro-feat">📋 深度报告</span>
+      <span class="intro-feat">⏱ 约3分钟</span>
     </div>
-    <button class="btn" onclick="startTest()">⚡ 开始测试</button>
-    <p class="note">📋 每题按真实感受选择，没有对错<br>👫 建议你和伴侣各自测完再对比</p>
+    <button class="btn" onclick="startTest()">✨ 开始测试</button>
+    <p class="intro-note">
+      💡 建议你和Ta各自独立完成，再对比两份报告<br>
+      📌 所有题目按真实感受作答，没有标准答案
+    </p>
   </div>
 </div>
 
 <!-- ==================== TEST PAGE ==================== -->
 <div class="test-page" id="testPage">
-  <div class="test-header">
-    <div class="progress-info">
-      <span id="progressLabel">第 1/12 维度</span>
-      <span id="questionCount">0/60 题</span>
+  <div class="container">
+    <div class="test-header">
+      <div class="progress-info">
+        <span id="progressLabel">💝 第 1 / 12 维度</span>
+        <span id="questionCount">0 / 60 题</span>
+      </div>
+      <div class="progress-bar"><div class="fill" id="progressFill" style="width:0%"></div></div>
     </div>
-    <div class="progress-bar"><div class="fill" id="progressFill" style="width:0%"></div></div>
-  </div>
-  <div id="questionsContainer"></div>
-  <div style="text-align:center;padding:24px;">
-    <button class="btn" id="submitBtn" onclick="submitTest()" style="opacity:0.4;pointer-events:none;">
-      📊 生成我的测评报告
-    </button>
-    <p style="color:var(--text2);font-size:0.78rem;margin-top:8px;" id="submitHint">
-      ⬆ 请完成全部 60 题后提交
-    </p>
+    <div id="questionsContainer"></div>
+    <div class="submit-area">
+      <button class="btn" id="submitBtn" onclick="submitTest()" style="opacity:0.45;pointer-events:none;transform:none;">
+        📊 生成我的深度报告
+      </button>
+      <p class="submit-hint" id="submitHint">👆 完成全部 60 题后解锁报告</p>
+    </div>
   </div>
 </div>
 
 <!-- ==================== RESULTS PAGE ==================== -->
 <div class="results-page" id="resultsPage">
-  <div class="results-header">
-    <h2>📊 你的情侣匹配度报告</h2>
-    <div class="score" id="totalScore">0</div>
-    <p style="color:var(--text2);">综合匹配指数（满分 120）</p>
-  </div>
+  <div class="container">
 
-  <div class="radar-card">
-    <h3>🎯 12维度雷达图</h3>
-    <div class="radar-wrap"><canvas id="radarChart"></canvas></div>
-  </div>
+    <!-- Score Hero -->
+    <div class="score-hero" id="scoreHero"></div>
 
-  <div class="dim-detail-grid" id="dimDetails"></div>
+    <!-- Radar Chart -->
+    <div class="card radar-card">
+      <div class="card-header">
+        <span class="ch-icon">🎯</span>
+        <span class="ch-title">12维度能力雷达图</span>
+      </div>
+      <div style="max-width:480px;margin:0 auto;">
+        <canvas id="radarChart"></canvas>
+      </div>
+      <p style="text-align:center;color:var(--text3);font-size:0.75rem;margin-top:8px;">
+        每项满分10分 · 虚线区域越大越均衡
+      </p>
+    </div>
 
-  <div class="advice-card" id="adviceCard"></div>
+    <!-- Couple Type -->
+    <div id="coupleTypeCard"></div>
 
-  <div class="btn-row">
-    <button class="btn" onclick="retakeTest()">🔄 重新测试</button>
-    <button class="btn-outline" onclick="shareResult()">📤 分享结果</button>
-  </div>
+    <!-- Detailed Dimension Analysis -->
+    <div class="card">
+      <div class="card-header">
+        <span class="ch-icon">🔍</span>
+        <span class="ch-title">12维度逐一解读</span>
+      </div>
+      <div class="dim-analysis-grid" id="dimAnalysisGrid"></div>
+    </div>
 
-  <div class="footer">
-    情侣匹配度深度测评 v1.0 · 仅供娱乐参考 · 真正的关系需要用心经营 💕
+    <!-- Top Strengths -->
+    <div class="report-section" id="strengthsSection"></div>
+
+    <!-- Growth Areas -->
+    <div class="report-section" id="growthSection"></div>
+
+    <!-- Relationship Health Summary -->
+    <div id="summarySection"></div>
+
+    <!-- Action Plan -->
+    <div class="card" id="actionPlanCard"></div>
+
+    <!-- Buttons -->
+    <div class="btn-row">
+      <button class="btn" onclick="retakeTest()">🔄 重新测试</button>
+      <button class="btn-outline" onclick="shareResult()">📤 分享给Ta</button>
+    </div>
+
+    <div class="footer">
+      💕 情侣匹配度深度测评 v2.0 · 基于关系心理学理论<br>
+      测试结果仅供自我觉察参考 · 真正的关系需要用心经营<br>
+      <a href="https://github.com/kenbonate/couple-test" target="_blank">GitHub</a>
+    </div>
   </div>
 </div>
 
@@ -255,33 +478,39 @@ body.overflow-hidden{overflow:hidden;}
 // ==================== TEST DATA ====================
 const DIMENSIONS = [
   {
-    id:'d1',name:'情绪同频力',color:'#ff5277',
+    id:'d1',name:'情绪同频力',color:'#ff6b8a',bg:'#fff0f3',icon:'🎭',
     desc:'你能多快感知并回应伴侣的情绪变化？',
-    icon:'🎭',
+    strengths:'你们天然具备情绪共振的能力——不需要对方把话说完，你已经感知到了空气里的情绪变化。这种"心灵雷达"是亲密关系中非常珍贵的天赋。你们的关系中很少出现"你根本不懂我"的委屈，因为懂，所以安全。',
+    growths:'你们之间的情绪信号偶尔会"断联"——一个人已经在心里翻江倒海，另一个还没接收到频率。这不是谁对谁错，而是你们拥有不同的"情绪母语"。关键不是猜得更准，而是学会直接表达："我现在需要你抱抱我"比"你自己猜"有效100倍。',
+    strong_score:'8.5',
     questions:[
       {q:'Ta还没开口说话，你就能感觉到Ta今天情绪不对。',opts:['完全不能','偶尔能','一半一半','经常能','几乎每次都能']},
-      {q:'当Ta向你倾诉烦恼时，你更多是"帮Ta解决问题"而非"安慰情绪"。',opts:['总是解决问题','经常','一半一半','偶尔','总是先安慰'],reverse:true},
+      {q:'当Ta向你倾诉烦恼时，你更多是"帮Ta解决问题"而非"先安抚情绪"。',opts:['总是解决问题','经常这样','一半一半','偶尔这样','总是先安抚'],reverse:true},
       {q:'你们在一起时，一个人情绪低落，另一个人也会莫名变得低落。',opts:['从不会','很少','有时','经常','几乎总是']},
       {q:'Ta在你面前哭了，你知道该说什么、做什么。',opts:['完全不知道','有点慌','勉强应对','比较从容','完全知道']},
       {q:'即使Ta嘴上说"没事"，你也能判断出是真没事还是假没事。',opts:['完全判断不了','偶尔能','一半一半','经常能','几乎每次都能']},
     ]
   },
   {
-    id:'d2',name:'冲突转化力',color:'#ff7b50',
+    id:'d2',name:'冲突转化力',color:'#ff8a80',bg:'#fff0ed',icon:'⚡',
     desc:'争吵后，你们的关系是变更好还是更糟？',
-    icon:'⚡',
+    strengths:'你们的争吵不是关系的减法，而是加法——每次冲突过后，你们反而比之前更了解彼此了。这是非常健康的关系模式。你们似乎已经掌握了"吵架的艺术"：不攻击人格、不翻旧账、不冷战到底，而是把冲突当成一次"系统升级"的机会。',
+    growths:'你们之间的冲突还停留在"争对错"的阶段——吵架的目的是为了赢，而不是为了理解。这会消耗关系的情感账户。试着把一个观念内化：在亲密关系中，"我们vs问题"永远比"我vs你"有效。下次争吵前，先问自己一句："我是想赢，还是想我们一起变好？"',
+    strong_score:'8.0',
     questions:[
-      {q:'吵架时，你们会说伤害对方的话。',opts:['每次都这样','经常','偶尔','很少','从来不会'],reverse:true},
+      {q:'吵架时，你们会说伤害对方人格的话（人身攻击）。',opts:['每次都这样','经常这样','偶尔','很少','从来不会'],reverse:true},
       {q:'吵完架之后，你们会复盘"我们刚才为什么会吵起来"。',opts:['从不','很少','偶尔','经常','每次都会']},
-      {q:'Ta指出你的问题时，你的第一反应是防御/反驳而非倾听。',opts:['总是防御','经常','一半一半','偶尔','总是先听'],reverse:true},
+      {q:'Ta指出你的问题时，你的第一反应是防御/反驳而非倾听。',opts:['总是防御','经常防御','一半一半','偶尔防御','总是先倾听'],reverse:true},
       {q:'每次吵架后，你们的关系反而比之前更了解彼此了。',opts:['从没有','很少','偶尔','经常','每次都是']},
-      {q:'你们有约定过"吵架规则"（比如不翻旧账、不人身攻击、不冷战超过24小时）。',opts:['完全没有','想过但没做','有模糊共识','有明确约定','严格执行']},
+      {q:'你们有约定过"吵架规则"（如不翻旧账、不人身攻击、不冷战超24小时）。',opts:['完全没有','想过但没做','有模糊共识','有明确约定','严格执行']},
     ]
   },
   {
-    id:'d3',name:'深度对话力',color:'#ffb74d',
+    id:'d3',name:'深度对话力',color:'#ffb74d',bg:'#fff8ee',icon:'💬',
     desc:'除了"吃什么""今天怎么样"，你们还能聊什么？',
-    icon:'💬',
+    strengths:'你们之间的聊天不是信息交换，而是灵魂共振。你们能聊童年、聊恐惧、聊对死亡的看法、聊宇宙和存在的意义。这种深度的"心灵裸聊"是很多关系一辈子都达不到的高度。请珍惜这种能力——它是你们关系的精神骨架。',
+    growths:'你们的对话目前更多停留在"事务层"——今天干了什么、明天要做什么、周末去哪里。这些当然重要，但如果只有这些，关系会慢慢变得像"合租室友"。建议每周留出30分钟"无目的聊天时间"：不聊具体事务，就聊最近在想什么、感受到什么、有什么新发现。',
+    strong_score:'8.2',
     questions:[
       {q:'你们能就一个抽象话题（如人生的意义、自由、死亡）聊超过30分钟。',opts:['从没有','很少','偶尔','经常','非常频繁']},
       {q:'你向Ta分享一个深刻的想法时，Ta会认真回应而非敷衍带过。',opts:['总是敷衍','经常敷衍','一半一半','比较认真','非常认真']},
@@ -291,9 +520,11 @@ const DIMENSIONS = [
     ]
   },
   {
-    id:'d4',name:'信任松弛力',color:'#ffd54f',
+    id:'d4',name:'信任松弛力',color:'#ffcc80',bg:'#fffaf2',icon:'🧘',
     desc:'不看对方手机、不查岗、不胡思乱想——这种松弛感你们有多少？',
-    icon:'🧘',
+    strengths:'你们的关系有一种非常难得的品质——松弛。不需要查岗、不需要报备、不需要解释每一个"为什么没回消息"。这种信任不是"无所谓"，而是"我足够安全，所以不需要控制"。这份松弛感是你们各自人格健康度的证明。',
+    growths:'你们的关系中还存在一些"信任摩擦力"——某个人（或双方）在某些时刻会感到不安、想要确认、忍不住猜疑。这不一定是对方做了什么，更多可能是自己过去的"情感创伤"在作祟。建议坦诚分享："我不是不信任你，我只是有时候控制不住自己的不安全感。"这句话本身就是信任的开始。',
+    strong_score:'8.3',
     questions:[
       {q:'Ta长时间不回消息时，你的第一反应是担心出事而非怀疑出轨。',opts:['总是往坏处想','经常怀疑','一半一半','多数担心安全','从不怀疑']},
       {q:'你们可以互相解锁对方的手机，但从来不会真的去翻。',opts:['经常互相翻','偶尔会翻','不确定','基本不翻','完全不翻']},
@@ -303,9 +534,11 @@ const DIMENSIONS = [
     ]
   },
   {
-    id:'d5',name:'亲密节奏感',color:'#66d9a0',
+    id:'d5',name:'亲密节奏感',color:'#a5d6a7',bg:'#f0faf1',icon:'🎵',
     desc:'黏而不腻、独而不冷——这个分寸你们拿捏得如何？',
-    icon:'🎵',
+    strengths:'你们在"在一起"和"做自己"之间找到了一个美妙的平衡点。想腻在一起的时候可以很甜，需要各自空间的时候又不会觉得被冷落。这种弹性的亲密模式不是天生的，而是你们互相尊重、彼此调节的结果。很健康，继续保持。',
+    growths:'你们在亲密距离上可能存在"不同步"——一个人觉得刚刚好，另一个人觉得太黏/太疏远。这不是爱的多少问题，而是每个人对"理想距离"的设定不同。建议做一个有趣的练习：每人画一个"亲密温度计"，标出自己觉得最舒服的距离区间，然后对比调整。',
+    strong_score:'7.8',
     questions:[
       {q:'你们对"多久见一次面/视频一次"的需求程度基本一致。',opts:['差异很大','有些差异','一半一半','比较一致','完全一致']},
       {q:'当你需要独处时，Ta能理解并给你空间，不会觉得被冷落。',opts:['完全不能','勉强接受','有时能','多数能','完全理解']},
@@ -315,21 +548,25 @@ const DIMENSIONS = [
     ]
   },
   {
-    id:'d6',name:'价值观引力',color:'#4dd0e1',
+    id:'d6',name:'价值观引力',color:'#81d4fa',bg:'#f0f8fc',icon:'🧲',
     desc:'钱怎么花、家怎么管、人生怎么过——底层共识有多强？',
-    icon:'🧲',
+    strengths:'你们在人生的核心议题上有着高度的"底层代码兼容"——不是每件事意见一致，而是在"什么最重要"这个根本问题上站在同一侧。这种价值观的引力会让你们在面对重大选择时不至于南辕北辙。这是一段关系能走远的核心基础。',
+    growths:'你们可能在某个重要维度上存在"价值观温差"——比如对金钱的态度、对家庭的想象、对事业的优先级。这不是不可调和的矛盾，但确实需要正视。建议做一次"价值观排序对话"：各自写下人生最重要的5件事，从最重要到最不重要排列，然后对比讨论。分歧不可怕，回避分歧才可怕。',
+    strong_score:'8.0',
     questions:[
       {q:'对于"钱应该花在体验上还是存起来"，你们的理念基本一致。',opts:['完全相反','差异较大','一半一半','比较一致','高度一致']},
       {q:'关于要不要孩子、什么时候要、怎么教育孩子，你们聊过且有共识。',opts:['从没聊过','聊过但分歧大','模糊讨论过','基本有共识','完全一致']},
       {q:'你们对待双方父母的方式让彼此都感到舒服。',opts:['很不舒服','有些不适','勉强OK','比较舒服','非常舒服']},
       {q:'在"什么算是出轨/越界"的定义上，你们看法一致。',opts:['差异很大','有些分歧','没讨论过','比较一致','高度一致']},
-      {q:'你们对"好的生活"的想象是相似的（比如城市vs田园、奋斗vs躺平）。',opts:['完全相反','差异很大','部分重叠','比较相似','几乎一样']},
+      {q:'你们对"好的生活"的想象是相似的（城市vs田园、奋斗vs躺平）。',opts:['完全相反','差异很大','部分重叠','比较相似','几乎一样']},
     ]
   },
   {
-    id:'d7',name:'日常默契度',color:'#5ea3f7',
+    id:'d7',name:'日常默契度',color:'#5ea3f7',bg:'#f0f5fd',icon:'🤝',
     desc:'无需言语的配合——从点菜到做家务，有多少心照不宣？',
-    icon:'🤝',
+    strengths:'你们之间有一种令人羡慕的"无声协作"——在厨房里不用说话就能配合做一顿饭，在超市里一个眼神就知道对方想买什么。这种默契不是偶然，而是你们在日常生活中积累了大量"彼此观察数据"的结果。这是关系的"肌肉记忆"，非常健康。',
+    growths:'你们的日常配合还有些"卡顿"——可能在生活习惯、节奏偏好上存在差异（比如一个人急性子、一个人慢性子；一个人爱整洁、一个人随意）。这不是大问题，但日积月累会消耗耐心。建议做一个"生活偏好清单"：坦诚列出各自在意的小习惯，能妥协的妥协，不能妥协的建立规则。',
+    strong_score:'7.5',
     questions:[
       {q:'你们一起做饭/做家务时，不需要分配任务就能自然配合。',opts:['完全不能','经常混乱','偶尔配合','比较默契','非常默契']},
       {q:'Ta还没开口，你已经知道Ta想点什么菜/喝什么饮料。',opts:['完全猜不到','偶尔猜对','一半一半','经常猜对','几乎总能']},
@@ -339,9 +576,11 @@ const DIMENSIONS = [
     ]
   },
   {
-    id:'d8',name:'成长共生力',color:'#8b6ff7',
+    id:'d8',name:'成长共生力',color:'#b39ddb',bg:'#f6f2fa',icon:'🌱',
     desc:'你们是彼此的加速器还是舒适区？',
-    icon:'🌱',
+    strengths:'你们的关系不仅仅是"在一起很舒服"，更是"在一起让我想成为更好的人"。你们互相激励、彼此启发、共同进化。这种成长型关系是最有生命力的——它不是两个半圆拼成一个圆，而是两个完整的圆一起往前滚。请一定保持这种互相"抬轿子"的默契。',
+    growths:'你们的关系可能更多处于"舒适模式"——在一起很安稳，但缺少了互相推动成长的动力。舒适当然重要，但如果长期只待在舒适区，关系会慢慢失去活力。建议开启一个"共同成长项目"：一起学一项新技能、一起读一本书然后讨论、一起完成一个挑战。让"我们一起变好"成为关系的新主题。',
+    strong_score:'7.8',
     questions:[
       {q:'和Ta在一起后，你觉得自己变成了更好的人。',opts:['完全没变好','变化不大','有一些变好','明显变好','脱胎换骨']},
       {q:'当你想学新技能/换工作/创业时，Ta是第一个支持你的人。',opts:['总是反对','经常泼冷水','不置可否','多数支持','全力支持']},
@@ -351,9 +590,11 @@ const DIMENSIONS = [
     ]
   },
   {
-    id:'d9',name:'责任共担力',color:'#b388ff',
+    id:'d9',name:'责任共担力',color:'#ce93d8',bg:'#faf2fb',icon:'🛡️',
     desc:'当压力来临时，你们是并肩作战还是各自为政？',
-    icon:'🛡️',
+    strengths:'你们在面对压力时展现出了非常好的"战友意识"——不是"你的问题"和"我的问题"，而是"我们的问题"。责任在你们之间不是负担，而是共同承担的自然流动。经济压力、家庭问题、生活变故——这些事情没有把你们推开，反而把你们拉得更近了。',
+    growths:'你们在责任分配上可能存在一些"隐性不平衡"——某个人承担了更多的情绪劳动、家务劳动或决策压力，而另一个人可能没有意识到。这不是故意的，但长期积累会变成怨气。建议做一次"责任大扫除"：把所有生活责任列出来，各自认领，然后互相说一声"谢谢你一直在做这些"。被看见的付出才不会变成怨气。',
+    strong_score:'7.5',
     questions:[
       {q:'遇到经济压力时，你们会一起商量对策而非互相指责。',opts:['总是互相指责','经常指责','一半一半','多数商量','总是一起面对']},
       {q:'家务/育儿/照顾家人的责任在你们之间分配得比较公平。',opts:['完全不公平','不太公平','勉强公平','比较公平','非常公平']},
@@ -363,9 +604,11 @@ const DIMENSIONS = [
     ]
   },
   {
-    id:'d10',name:'浪漫续航力',color:'#f06292',
+    id:'d10',name:'浪漫续航力',color:'#f06292',bg:'#fff0f5',icon:'✨',
     desc:'热恋期过后，你们还能持续为关系注入新鲜感吗？',
-    icon:'✨',
+    strengths:'你们很懂得给爱情"续杯"——即使过了热恋期，你们仍然会创造小惊喜、维持约会感、在平凡的日子里找到浪漫。这种能力太珍贵了！爱情不是一开始燃烧得多旺，而是烧了很久之后火苗还在跳动。你们的关系中还有"心跳感"，继续保持创造的冲动。',
+    growths:'你们的关系可能进入了"平稳期"——很稳定、很安心，但少了些新鲜感和惊喜。这不是问题，而是一个信号：是时候给关系注入一些"新元素"了。试试"新人约会法"：假装你们刚认识，去一个没去过的地方，问一些没问过的问题。新鲜感不是等来的，是创造出来的。',
+    strong_score:'7.2',
     questions:[
       {q:'你们会有意识地创造"约会感"（而非只是待在一起刷手机）。',opts:['从没有','很少','偶尔','经常','非常频繁']},
       {q:'你上一次给Ta准备小惊喜（卡片/礼物/特别安排）是什么时候？',opts:['一年以上','半年左右','三个月内','一个月内','一周内']},
@@ -375,9 +618,11 @@ const DIMENSIONS = [
     ]
   },
   {
-    id:'d11',name:'危机韧性力',color:'#4db6ac',
+    id:'d11',name:'危机韧性力',color:'#4db6ac',bg:'#eef8f7',icon:'💪',
     desc:'当外部世界对你们的关系施加压力时，你们是更紧还是更散？',
-    icon:'💪',
+    strengths:'你们的关系经历过考验——而且考验让你们更紧密了。这是最珍贵的品质。外部压力（家人反对、异地、经济困难、工作受挫）没有把你们击垮，反而加固了你们的联结。你们已经证明了"我们能一起扛过风雨"，这份信心本身就是关系的压舱石。',
+    growths:'你们可能还没有经历过真正意义上的"关系压力测试"——或者经历的时候有些慌乱。这不是坏事，意味着你们还有机会提前"演练"。建议找一个轻松的时间，聊聊"如果……怎么办"：如果异地一年？如果一方失业？如果家人强烈反对？提前讨论不是诅咒，而是给未来备好急救包。',
+    strong_score:'7.5',
     questions:[
       {q:'外界有人不看好你们的关系（家人反对/朋友质疑），你们会更团结。',opts:['会被动摇','有些影响','不确定','更团结','非常团结']},
       {q:'异地/异国一段时间对你们的关系影响有多大？',opts:['完全撑不住','有很大影响','有些影响','影响很小','完全没问题']},
@@ -387,13 +632,15 @@ const DIMENSIONS = [
     ]
   },
   {
-    id:'d12',name:'愿景交汇度',color:'#ff8a65',
+    id:'d12',name:'愿景交汇度',color:'#ff8a65',bg:'#fff4f0',icon:'🎯',
     desc:'你画的未来和Ta画的未来，有多少重叠？',
-    icon:'🎯',
+    strengths:'你们对未来有着清晰的、共同的想象——不是模糊的"我们会一直在一起"，而是具体的画面：住在哪里、过着什么生活、一起做什么事情。这种具象化的未来愿景是关系最好的"指南针"——当日常琐碎让你们迷失时，抬头看看那个共同的北极星，就知道方向在哪。',
+    growths:'你们可能还没认真聊过"五年后我们会在哪里"这个话题——或者各自心里有画面但没有拿出来对照过。建议找一个周末的下午，各拿一张纸画出"我理想中的5年后"，然后交换看。重叠的地方就是你们共同的北极星；不重叠的地方，是你们需要对话的起点。',
+    strong_score:'8.0',
     questions:[
       {q:'你们对"5年后我们的生活是什么样子"有过具体的想象和讨论。',opts:['从没讨论过','偶尔提到','聊过但模糊','比较具体','非常具体']},
       {q:'你对未来生活的想象中，Ta明确在其中且角色清晰。',opts:['不确定Ta在不在','模糊存在','应该有','肯定有','无法想象没有Ta']},
-      {q:'你们有共同的人生目标（比如一起买房、一起旅行某个地方、一起创业）。',opts:['完全没有','有一些模糊的','有1-2个','有3-4个','有很多']},
+      {q:'你们有共同的人生目标（如一起买房、一起旅行某处、一起创业）。',opts:['完全没有','有一些模糊的','有1-2个','有3-4个','有很多']},
       {q:'如果你们对未来有分歧，你们能建设性地讨论并找到折中方案。',opts:['完全不能','很难讨论','勉强能','比较顺畅','非常顺畅']},
       {q:'想到和Ta共度余生，你的感觉是？',opts:['感到恐惧','有些犹豫','不确定','期待','充满期待']},
     ]
@@ -401,13 +648,12 @@ const DIMENSIONS = [
 ];
 
 // ==================== STATE ====================
-let answers = {}; // key: 'd0_q0' -> 1-5
+let answers = {};
 
 // ==================== BUILD TEST ====================
 function startTest(){
   document.getElementById('introPage').style.display='none';
-  const tp = document.getElementById('testPage');
-  tp.classList.add('active');
+  document.getElementById('testPage').classList.add('active');
   buildQuestions();
   window.scrollTo(0,0);
 }
@@ -415,14 +661,13 @@ function startTest(){
 function buildQuestions(){
   const container = document.getElementById('questionsContainer');
   let html='';
-  let qIdx=0;
 
   DIMENSIONS.forEach((dim,d)=>{
     html+=`<div class="dim-section" id="dimSection${d}">
       <div class="dim-header">
-        <div class="dim-num" style="background:${dim.color}">${d+1}</div>
+        <div class="dim-num" style="background:${dim.color}">${dim.icon}</div>
         <div>
-          <div class="dim-name">${dim.icon} ${dim.name}</div>
+          <div class="dim-name">${dim.name}</div>
         </div>
       </div>
       <div class="dim-desc">${dim.desc}</div>`;
@@ -430,16 +675,15 @@ function buildQuestions(){
     dim.questions.forEach((q,qid)=>{
       const key = `${d}_${qid}`;
       html+=`<div class="question">
-        <div class="q-text">${qid+1}. ${q.q}</div>
+        <div class="q-text"><span class="q-num">${qid+1}</span>${q.q}</div>
         <div class="options" data-key="${key}">`;
       q.opts.forEach((opt,oidx)=>{
         html+=`<div class="option" data-key="${key}" data-val="${oidx+1}" onclick="selectOption(this,'${key}',${oidx+1},${d})">
-          ${oidx+1}
+          <span class="opt-score">${oidx+1}</span>
           <span class="opt-label">${opt}</span>
         </div>`;
       });
       html+=`</div></div>`;
-      qIdx++;
     });
 
     html+=`</div>`;
@@ -450,16 +694,11 @@ function buildQuestions(){
 }
 
 function selectOption(el,key,val,dimIdx){
-  // Clear siblings
   const parent = el.parentElement;
   parent.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
   el.classList.add('selected');
   answers[key]=val;
-
-  // Update question count
   updateProgress();
-
-  // Check if all questions in this dimension are answered
   checkDimComplete(dimIdx);
 }
 
@@ -470,206 +709,306 @@ function checkDimComplete(dimIdx){
   DIMENSIONS[dimIdx].questions.forEach((q,qid)=>{
     if(!answers[`${dimIdx}_${qid}`])allAnswered=false;
   });
-  if(allAnswered) section.classList.add('current');
+  if(allAnswered){section.classList.add('current');section.classList.add('completed');}
   else section.classList.remove('current');
 }
 
 function updateProgress(){
-  const total = 60;
-  const answered = Object.keys(answers).length;
-  document.getElementById('questionCount').textContent=answered+'/60 题';
+  const total=60,answered=Object.keys(answers).length;
+  document.getElementById('questionCount').textContent=answered+' / 60 题';
   document.getElementById('progressFill').style.width=(answered/total*100)+'%';
+  const dimDone=Math.floor(answered/5);
+  document.getElementById('progressLabel').textContent='💝 第 '+(dimDone+1>12?12:dimDone+1)+' / 12 维度';
 
-  const submitBtn = document.getElementById('submitBtn');
-  const submitHint = document.getElementById('submitHint');
-  if(answered >= total){
-    submitBtn.style.opacity='1';
-    submitBtn.style.pointerEvents='auto';
-    submitHint.textContent='✅ 全部完成！点击生成报告';
-  } else {
-    submitBtn.style.opacity='0.4';
-    submitBtn.style.pointerEvents='none';
-    submitHint.textContent=`⬆ 还剩 ${total-answered} 题，请继续作答`;
+  const submitBtn=document.getElementById('submitBtn');
+  const submitHint=document.getElementById('submitHint');
+  if(answered>=total){
+    submitBtn.style.opacity='1';submitBtn.style.pointerEvents='auto';submitBtn.style.transform='';
+    submitHint.textContent='✅ 全部完成！点击生成深度报告';
+  }else{
+    submitBtn.style.opacity='0.45';submitBtn.style.pointerEvents='none';submitBtn.style.transform='none';
+    submitHint.textContent='👆 还剩 '+(total-answered)+' 题，请继续作答';
   }
 }
 
 // ==================== SUBMIT ====================
 function submitTest(){
-  const total = 60;
-  const answered = Object.keys(answers).length;
-  if(answered < total){
-    alert(`还有 ${total-answered} 道题没答完哦～请完成全部题目再提交`);
-    return;
-  }
+  const total=60,answered=Object.keys(answers).length;
+  if(answered<total){alert('还有 '+(total-answered)+' 道题没答完哦～请完成全部题目再提交');return;}
 
-  // Calculate scores
-  const scores = DIMENSIONS.map((dim,d)=>{
+  const scores=DIMENSIONS.map((dim,d)=>{
     let raw=0;
     dim.questions.forEach((q,qid)=>{
-      let val = answers[`${d}_${qid}`] || 3;
-      // Handle reverse items
-      if(q.reverse) val = 6 - val;
-      raw += val;
+      let val=answers[`${d}_${qid}`]||3;
+      if(q.reverse)val=6-val;
+      raw+=val;
     });
-    // Normalize: raw 5-25 -> 0-10
-    return Math.round((raw - 5) / 20 * 100) / 10; // 0.0-10.0
+    return Math.round((raw-5)/20*100)/10;
   });
 
-  const totalScore = Math.round(scores.reduce((a,b)=>a+b,0) * 10) / 10;
-  const totalPossible = 120;
+  const totalScore=Math.round(scores.reduce((a,b)=>a+b,0)*10)/10;
+  const avgScore=Math.round(totalScore/12*10)/10;
 
-  // Switch to results
   document.getElementById('testPage').classList.remove('active');
-  const rp = document.getElementById('resultsPage');
-  rp.classList.add('active');
+  document.getElementById('resultsPage').classList.add('active');
   window.scrollTo(0,0);
 
-  // Total score
-  document.getElementById('totalScore').textContent = totalScore.toFixed(1);
-
-  // Determine level
-  let levelEmoji, levelText;
-  if(totalScore >= 100){levelEmoji='🌟';levelText='灵魂伴侣级——你们之间的共鸣远超常人';}
-  else if(totalScore >= 85){levelEmoji='💖';levelText='高度契合——有很好的基础，少数维度需磨合';}
-  else if(totalScore >= 70){levelEmoji='💛';levelText='良好匹配——部分维度亮眼，部分需刻意练习';}
-  else if(totalScore >= 55){levelEmoji='🔄';levelText='需要磨合——差异不可怕，可怕的是不愿意沟通';}
-  else{levelEmoji='🌱';levelText='差异较大——但如果愿意，差异也可以成为成长的土壤';}
-  document.getElementById('totalScore').insertAdjacentHTML('afterend',
-    `<p style="margin-top:4px;font-size:0.95rem;">${levelEmoji} ${levelText}</p>`);
-
-  // Radar chart
+  renderScoreHero(totalScore,avgScore,scores);
   renderRadar(scores);
+  renderCoupleType(scores);
+  renderDimAnalysis(scores);
+  renderStrengths(scores);
+  renderGrowthAreas(scores);
+  renderSummary(totalScore,avgScore,scores);
+  renderActionPlan(scores);
 
-  // Dimension details
-  renderDimDetails(scores);
-
-  // Advice
-  renderAdvice(scores);
-
-  // Store for share
-  window._results = {scores, totalScore, levelText};
+  window._results={scores,totalScore,avgScore};
 }
 
-function renderRadar(scores){
-  const ctx = document.getElementById('radarChart').getContext('2d');
-  // Destroy previous
-  if(window._radarChart) window._radarChart.destroy();
+// ==================== SCORE HERO ====================
+function renderScoreHero(total,avg,scores){
+  let grade,emoji,desc,color;
+  if(avg>=8.5){grade='S';emoji='🌟';color='#ff6b8a';desc='你们的关系处在非常健康的状态。不是没有问题，而是你们已经构建了面对问题的能力和默契。12个维度全面开花，既有深度也有广度。这不是终点，而是一个很好的起点——继续保持，同时警惕"高分区盲点"：最满意的地方往往是最容易被忽视的地方。';}
+  else if(avg>=7.5){grade='A';emoji='💖';color='#ff8a80';desc='你们的关系总体健康，在大多数维度上都有不错的表现。你们已经有了很好的"关系底盘"，少数得分偏低的维度是接下来可以刻意练习的方向。好消息是：你们的基础足够好，改善弱项会比从零开始容易得多。';}
+  else if(avg>=6.5){grade='B';emoji='💛';color='#ffb74d';desc='你们的关系有亮点也有暗区——在某些维度上你们天然契合，在另一些维度上存在明显差异。这非常正常，大多数健康的关系都在这个区间。关键是：不要回避那些得分偏低的维度，它们不是"我们不适合"的证据，而是"我们需要在这里多花些时间"的信号。';}
+  else if(avg>=5.5){grade='C';emoji='🔄';color='#ff8a65';desc='你们可能在不少维度上感受到了"摩擦力"。这些差异真实存在，但并不代表你们不适合——它代表你们需要比别的情侣更刻意地去经营某些方面。差异不是问题，回避差异才是。如果你们都愿意在这些维度上投入，改善空间非常大。';}
+  else{grade='D';emoji='🌱';color='#a5d6a7';desc='你们在多个维度上有较大差异，这可能让你们感到有些吃力。但请记住：低分不是评判，而是地图——它标记了"这里需要修路"。很多关系的起点并不高，但正因为双方愿意一起面对和改善，最终走得比那些"天然契合"的关系更远。关键在于：你们是否都愿意为这段关系投资？';}
 
-  window._radarChart = new Chart(ctx, {
+  document.getElementById('scoreHero').innerHTML=`
+    <div class="grade-badge" style="background:linear-gradient(135deg,${color},${color}dd)">${grade}</div>
+    <div class="grade-label">${emoji} 综合匹配等级：${grade}级</div>
+    <div class="grade-desc">${desc}</div>
+    <div class="score-bar-wrap">
+      <span style="font-size:0.85rem;font-weight:700;color:${color};">${avg.toFixed(1)}</span>
+      <div class="score-bar-bg"><div class="score-bar-fill" style="width:${avg*10}%;background:${color};"></div></div>
+      <span class="score-bar-label">/ 10 分均</span>
+    </div>
+    <p style="margin-top:12px;font-size:0.85rem;color:var(--text2);">
+      综合总分：<strong style="color:${color};">${total.toFixed(1)}</strong> / 120
+      &nbsp;·&nbsp; 最高维：<strong>${DIMENSIONS[scores.indexOf(Math.max(...scores))].name} ${Math.max(...scores).toFixed(0)}分</strong>
+      &nbsp;·&nbsp; 成长维：<strong>${DIMENSIONS[scores.indexOf(Math.min(...scores))].name} ${Math.min(...scores).toFixed(0)}分</strong>
+    </p>`;
+}
+
+// ==================== RADAR ====================
+function renderRadar(scores){
+  const ctx=document.getElementById('radarChart').getContext('2d');
+  if(window._radarChart)window._radarChart.destroy();
+
+  window._radarChart=new Chart(ctx,{
     type:'radar',
     data:{
-      labels: DIMENSIONS.map(d=>d.name),
+      labels:DIMENSIONS.map(d=>d.name),
       datasets:[{
         label:'你的得分',
         data:scores,
-        backgroundColor:'rgba(139,111,247,0.15)',
-        borderColor:'rgba(139,111,247,0.9)',
+        backgroundColor:'rgba(255,107,138,0.12)',
+        borderColor:'rgba(255,107,138,0.8)',
         borderWidth:2.5,
-        pointBackgroundColor: scores.map((s,i)=>DIMENSIONS[i].color),
+        pointBackgroundColor:scores.map((s,i)=>DIMENSIONS[i].color),
         pointBorderColor:'#fff',
-        pointBorderWidth:2,
+        pointBorderWidth:2.5,
         pointRadius:5,
         pointHoverRadius:8,
       }]
     },
     options:{
-      responsive:true,
-      maintainAspectRatio:true,
-      aspectRatio:1,
+      responsive:true,maintainAspectRatio:true,aspectRatio:1,
       scales:{
         r:{
-          beginAtZero:true,
-          max:10,
-          min:0,
-          ticks:{stepSize:2,color:'#8888a0',backdropColor:'transparent',font:{size:10}},
-          pointLabels:{color:'#e8e8f0',font:{size:12,weight:'600'}},
-          grid:{color:'rgba(255,255,255,0.08)'},
-          angleLines:{color:'rgba(255,255,255,0.08)'},
+          beginAtZero:true,max:10,min:0,
+          ticks:{stepSize:2,color:'#9b7b89',backdropColor:'transparent',font:{size:10}},
+          pointLabels:{color:'#4a3340',font:{size:11,weight:'600'}},
+          grid:{color:'rgba(240,213,219,0.6)'},
+          angleLines:{color:'rgba(240,213,219,0.6)'},
         }
       },
       plugins:{
         legend:{display:false},
         tooltip:{
-          backgroundColor:'#141420',
-          borderColor:'#252538',
-          borderWidth:1,
-          callbacks:{
-            label:ctx=>` ${ctx.raw.toFixed(1)} / 10`
-          }
+          backgroundColor:'#fff',titleColor:'#4a3340',bodyColor:'#4a3340',
+          borderColor:'#f0d5db',borderWidth:1,
+          callbacks:{label:ctx=>` ${ctx.raw.toFixed(1)} / 10 分`}
         }
       }
     }
   });
 }
 
-function renderDimDetails(scores){
-  const container = document.getElementById('dimDetails');
-  container.innerHTML = DIMENSIONS.map((dim,d)=>{
-    const s = scores[d];
-    let emoji;
-    if(s>=8)emoji='🌟';else if(s>=6.5)emoji='💛';else if(s>=5)emoji='🔄';else emoji='🌱';
-    return `<div class="dim-detail">
-      <div class="dd-score" style="color:${dim.color}">${s.toFixed(1)}<span style="font-size:0.7rem;color:var(--text2)">/10</span></div>
-      <div class="dd-name">${emoji} ${dim.name}</div>
-      <div class="dd-bar"><div class="fill" style="width:${s*10}%;background:${dim.color}"></div></div>
-      <div style="font-size:0.72rem;color:var(--text2);margin-top:4px;">${dim.desc}</div>
+// ==================== COUPLE TYPE ====================
+function renderCoupleType(scores){
+  const avg=Math.round(scores.reduce((a,b)=>a+b,0)/12*10)/10;
+  const top3Idx=scores.map((s,i)=>({s,i})).sort((a,b)=>b.s-a.s).slice(0,3).map(x=>DIMENSIONS[x.i].name);
+  const low3Idx=scores.map((s,i)=>({s,i})).sort((a,b)=>a.s-b.s).slice(0,3).map(x=>DIMENSIONS[x.i].name);
+
+  // Determine couple type
+  let typeName,typeDesc;
+  const emotion=scores[0],conflict=scores[1],trust=scores[3],growth=scores[7],vision=scores[11];
+  const emotionalAvg=(emotion+conflict+trust)/3;
+  const practicalAvg=(scores[6]+scores[8]+scores[11])/3;
+
+  if(emotionalAvg>=8&&practicalAvg>=7.5){
+    typeName='🌈 双高全能型';typeDesc='你们是让人羡慕的"神仙眷侣"——既有深度情感联结，又能一起搞定生活琐事。你们的关系不是没有问题，而是什么问题都能一起面对。唯一要注意的：别因为"一直都很好"而忽略了关系的持续经营。好关系需要持续投喂，不是一旦达成就能自动运转。';
+  }else if(emotionalAvg>=7.5&&practicalAvg<6.5){
+    typeName='💕 情感浓烈型';typeDesc='你们的情感联结非常强——情绪同频、深度对话、互相信任，这些都是很多人一辈子都在寻找的东西。但在"过日子"的维度上还有提升空间。没关系，爱足够深的时候，学学怎么分配家务和规划财务并不难。你们的关系是"高情感+待提升的实操"。';
+  }else if(emotionalAvg<6.5&&practicalAvg>=7.5){
+    typeName='🤝 务实搭档型';typeDesc='你们在生活层面上非常合拍——钱怎么管、家务怎么做、未来怎么规划，配合得天衣无缝。但在情感的深度和温度上还有成长空间。你们的关系像一家运转良好的公司，但别忘了它也需要"心脏"而不仅仅是"大脑"。试试多分享感受，而不仅仅是信息。';
+  }else if(avg>=7){
+    typeName='🌿 均衡成长型';typeDesc='你们在大多数维度上都有不错的表现，没有明显的"瘸腿"，但也可能缺少特别突出的长板。这是最"可持续发展"的类型——你们知道自己哪里好、哪里需要努力，并且有意愿去改善。平衡本身就是一种了不起的成就。';
+  }else{
+    typeName='🌻 潜力开发型';typeDesc='你们的雷达图可能看起来不够"圆润"，但这恰恰说明你们有大量未被开发的潜力。很多伟大的关系都不是一开始就完美，而是双方在"不完美"中持续选择彼此、持续投入改善。关键是：你们愿意一起面对这些数字，这本身就已经赢了大多数人。';
+  }
+
+  document.getElementById('coupleTypeCard').innerHTML=`
+    <div class="type-card">
+      <div class="type-name">${typeName}</div>
+      <div class="type-desc">${typeDesc}</div>
+      <div style="margin-top:12px;font-size:0.82rem;color:var(--text2);">
+        🏆 优势三强：${top3Idx.join(' · ')}<br>
+        🌱 成长空间：${low3Idx.join(' · ')}
+      </div>
+    </div>`;
+}
+
+// ==================== DIMENSION ANALYSIS ====================
+function renderDimAnalysis(scores){
+  const grid=document.getElementById('dimAnalysisGrid');
+  grid.innerHTML=DIMENSIONS.map((dim,d)=>{
+    const s=scores[d];
+    let level,levelColor,interpretation;
+    if(s>=8.5){level='卓越';levelColor='#ff6b8a';interpretation=dim.strengths;}
+    else if(s>=7){level='良好';levelColor='#ff8a80';interpretation=dim.strengths.substring(0,Math.floor(dim.strengths.length*0.65))+'…';}
+    else if(s>=5.5){level='一般';levelColor='#ffb74d';interpretation=dim.growths.substring(0,Math.floor(dim.growths.length*0.65))+'…';}
+    else{level='待成长';levelColor='#a5d6a7';interpretation=dim.growths;}
+
+    return `<div class="dim-a-card">
+      <div class="dim-a-header">
+        <span class="dim-a-name">${dim.icon} ${dim.name}</span>
+        <span class="dim-a-score" style="color:${dim.color};background:${dim.bg};">${s.toFixed(1)}</span>
+      </div>
+      <div class="dim-a-bar"><div class="fill" style="width:${s*10}%;background:${dim.color};"></div></div>
+      <div class="dim-a-detail">
+        <span style="color:${levelColor};font-weight:700;">【${level}】</span>
+        ${interpretation}
+      </div>
     </div>`;
   }).join('');
 }
 
-function renderAdvice(scores){
-  // Find top 3 and bottom 3
-  const indexed = scores.map((s,i)=>({score:s, dim:DIMENSIONS[i], idx:i}));
-  indexed.sort((a,b)=>b.score-a.score);
-  const top3 = indexed.slice(0,3);
-  const bottom3 = indexed.slice(-3).reverse();
+// ==================== STRENGTHS ====================
+function renderStrengths(scores){
+  const indexed=scores.map((s,i)=>({s,i})).sort((a,b)=>b.s-a.s);
+  const top3=indexed.slice(0,3);
 
-  let html = '<h3>📋 个性化分析报告</h3>';
+  let html='<div class="card"><div class="card-header"><span class="ch-icon">💪</span><span class="ch-title">你们的三大关系优势</span></div><ul class="insight-list">';
 
-  html += '<p style="font-weight:600;color:var(--green);margin-bottom:8px;">💪 你们的关系优势</p>';
-  top3.forEach((item,i)=>{
-    html += `<div class="advice-item">
-      <span class="ai-tag strength">优势${i+1}</span>
-      <span><strong>${item.dim.name}（${item.score.toFixed(1)}分）</strong> — ${item.dim.desc} 这是你们关系的"压舱石"，继续保持并善用这些优势去弥补弱项。</span>
-    </div>`;
+  top3.forEach((item,rank)=>{
+    const dim=DIMENSIONS[item.i];
+    const medals=['🥇','🥈','🥉'];
+    const detailedAdv=dim.strengths+(rank===0?' 这是你们关系中最宝贵的资产，请像守护火焰一样守护它。':'');
+    html+=`<li>
+      <div class="il-header">
+        <span class="il-tag strength">${medals[rank]} 优势${rank+1}</span>
+        <span class="il-title">${dim.name} <span style="color:${dim.color};">${item.s.toFixed(1)}分</span></span>
+      </div>
+      <div class="il-desc">${detailedAdv}</div>
+    </li>`;
   });
 
-  html += '<p style="font-weight:600;color:var(--pink);margin:16px 0 8px;">🎯 需要关注的领域</p>';
-  bottom3.forEach((item,i)=>{
-    const tips = getTip(item.dim.id);
-    html += `<div class="advice-item">
-      <span class="ai-tag weakness">关注${i+1}</span>
-      <span><strong>${item.dim.name}（${item.score.toFixed(1)}分）</strong> — ${tips}</span>
-    </div>`;
-  });
-
-  html += '<p style="font-weight:600;color:var(--purple);margin:16px 0 8px;">💡 行动建议</p>';
-  html += `<div class="advice-item">
-    <span class="ai-tag tip">建议</span>
-    <span>选一个你们得分最低的维度，这周专门聊一次——不是"解决问题"，就是<strong>好奇地了解对方为什么那样想</strong>。你会发现，了解本身就是治愈的开始。</span>
-  </div>`;
-
-  document.getElementById('adviceCard').innerHTML=html;
+  html+='</ul></div>';
+  document.getElementById('strengthsSection').innerHTML=html;
 }
 
-function getTip(dimId){
+// ==================== GROWTH AREAS ====================
+function renderGrowthAreas(scores){
+  const indexed=scores.map((s,i)=>({s,i})).sort((a,b)=>a.s-b.s);
+  const bottom3=indexed.slice(0,3);
+
+  let html='<div class="card"><div class="card-header"><span class="ch-icon">🎯</span><span class="ch-title">三个最值得投入的成长方向</span></div><ul class="insight-list">';
+
+  bottom3.forEach((item,rank)=>{
+    const dim=DIMENSIONS[item.i];
+    const tips=getSpecificTip(dim.id);
+    html+=`<li>
+      <div class="il-header">
+        <span class="il-tag growth">🎯 成长${rank+1}</span>
+        <span class="il-title">${dim.name} <span style="color:${dim.color};">${item.s.toFixed(1)}分</span></span>
+      </div>
+      <div class="il-desc">${dim.growths}</div>
+      <div class="il-desc" style="margin-top:6px;padding:8px 12px;background:${dim.bg};border-radius:8px;">
+        <strong>💡 本周可做的练习：</strong>${tips}
+      </div>
+    </li>`;
+  });
+
+  html+='</ul></div>';
+  document.getElementById('growthSection').innerHTML=html;
+}
+
+function getSpecificTip(dimId){
   const tips={
-    d1:'尝试练习"反射式倾听"——在回应之前，先复述一遍对方说的内容+"我听到的是…对吗？"。这能让情绪同频力大幅提升。',
-    d2:'约定"暂停暗号"——当一方感觉情绪要失控时，说一个词（比如"黄色"）双方暂停15分钟再继续。冲突不是敌人，失控才是。',
-    d3:'每周安排一次"无手机散步"——边走边聊，不设话题。最深的对话往往发生在不经意的时刻。',
-    d4:'练习"不查岗24小时"——选一天完全不追问对方行踪，观察自己的焦虑从哪来。信任松弛是可以训练的肌肉。',
-    d5:'做一个"亲密需求温度计"——每周互相打分1-5"这周黏度够吗"，然后调整下周的相处节奏。',
-    d6:'做一次"价值观清单"对话——每人写下人生中最重要的5件事，然后对比讨论。分歧本身不可怕，回避分歧才可怕。',
-    d7:'建立"默契暗号"——为常见场景（我想走了/我超开心/我需要你）各设计一个手势或词，默契是可以主动培养的。',
-    d8:'成为彼此的"成长教练"——每月一次互相问"你最近在学什么？我能怎么支持你？"。最好的关系是互相成就。',
-    d9:'做一个"责任清单"——把生活中的所有责任列出来，各自认领+互相感谢。被看见的付出才不会变成怨气。',
-    d10:'每月一次"新人约会"——假装你们刚认识，去一个没去过的地方，聊没聊过的话题。新鲜感不是等来的，是创造出来的。',
-    d11:'预设"最坏情况"——如果异地一年、如果一方失业、如果家人反对…提前讨论应对方案。有预案的危机就只是"问题"，不是"灾难"。',
-    d12:'做一个"未来拼图"——各自画理想中的5年后生活，然后对比重叠部分。重叠就是你们共同的北极星。',
+    d1:'下次当你感觉到Ta情绪不对时，不要问"你怎么了"，而是说"我感觉你好像有点……（难过/烦躁/疲惫），对吗？"——反射式倾听是情绪同频的第一课。',
+    d2:'和Ta约定一个"暂停暗号"——当一方感觉情绪要失控时，说一个特定的词（比如"黄色暂停"），双方分开15分钟再回来继续。暂停不是逃避，是保护。',
+    d3:'这周找一次散步的机会，不带手机。边走边聊一个"不实用"的话题：你最近在想什么？你害怕什么？你期待什么？最深的对话往往发生在并肩行走时。',
+    d4:'试试"24小时不查岗挑战"：选一天完全不追问对方行踪、不检查手机、不让猜疑主导你的脑内小剧场。观察自己的焦虑从哪来——它往往和对方无关，和自己的过去有关。',
+    d5:'这周做一个"亲密温度计"小练习：每人给这周的亲密距离打分1-5（1=太疏远，5=太黏），然后一起调整下周的相处节奏。直接沟通比互相猜测高效10倍。',
+    d6:'找个安静的晚上，每人写下"我人生中最重要的5件事"，从最重要到最不重要排序。然后交换看。不评价、不辩论，就好奇地问："为什么这个对你这么重要？"',
+    d7:'花10分钟列出你们各自在意的"生活小习惯"（比如牙膏从中间挤还是底部挤、袜子能不能放沙发上），能妥协的打勾，不能妥协的设规则。小事不积累，大事不翻车。',
+    d8:'这周开启一个"微成长项目"：一起学一件小事（一道新菜、一首歌、一个魔术），完成后庆祝一下。让"我们一起变好"成为关系的新节奏。',
+    d9:'找一个周末把生活里所有需要做的事列出来（赚钱、家务、社交安排、情绪安抚、未来规划），各自认领自己已经在做的，然后真诚地说一句"谢谢你一直在做这些"。',
+    d10:'这周安排一次"新人约会"：去一个你们从没去过的地方（哪怕只是一家新咖啡馆），假装你们刚认识。问三个你"应该知道但可能从没问过"的问题。',
+    d11:'找一个轻松的时刻聊聊"如果"——如果异地一年我们怎么办？如果一方失业了？如果家人反对？这不是咒你们，而是给关系提前买保险。有预案的危机只是"问题"，不是"灾难"。',
+    d12:'各拿一张纸，画下"我理想中5年后的生活"——不用写文字，就画场景。然后交换看，圈出重叠的部分。那就是你们共同的北极星。不重叠的部分，是接下来要对话的起点。',
   };
-  return tips[dimId] || '多花时间在这个维度上刻意练习，小进步积累成大改变。';
+  return tips[dimId]||'在这个维度上多花一些刻意练习的时间，小进步会积累成大改变。';
 }
 
+// ==================== SUMMARY ====================
+function renderSummary(total,avg,scores){
+  const topDim=DIMENSIONS[scores.indexOf(Math.max(...scores))];
+  const lowDim=DIMENSIONS[scores.indexOf(Math.min(...scores))];
+  const range=Math.max(...scores)-Math.min(...scores);
+  let balanceNote;
+  if(range<=2)balanceNote='非常均衡——你在12个维度上的表现差异很小，这说明你的关系各方面发展比较同步，没有明显的"偏科"。这是一种难得的健康状态。';
+  else if(range<=4)balanceNote='比较均衡——虽然有些维度更突出，有些稍弱，但整体差异在正常范围内。关注低分维度但不焦虑，它们是成长空间而不是缺陷。';
+  else balanceNote='差异明显——你的雷达图上有明显的"山峰"和"山谷"。这本身不是问题（每个人都有自己的优势和盲区），但需要留意：不要让高光维度掩盖了需要关注的地方。';
+
+  document.getElementById('summarySection').innerHTML=`
+    <div class="summary-card">
+      <div class="sum-title">📋 关系健康度总评</div>
+      <div class="sum-text">
+        <p>你的综合匹配指数为 <strong style="color:var(--pink);font-size:1.1rem;">${total.toFixed(1)} / 120</strong>，维度均分 <strong style="color:var(--pink);">${avg.toFixed(1)} / 10</strong>。</p>
+        <p style="margin-top:8px;">🎯 <strong>最亮眼的维度：${topDim.name}</strong>（${Math.max(...scores).toFixed(0)}分）—— ${topDim.desc} 这是你们关系的"超级长板"，在遇到困难时，这个优势会成为你们最重要的资源。</p>
+        <p style="margin-top:8px;">🌱 <strong>最有成长空间的维度：${lowDim.name}</strong>（${Math.min(...scores).toFixed(0)}分）—— ${lowDim.desc} 好消息是：这个维度完全可以通过刻意练习来改善。它不是性格缺陷，而是技能差距，技能是可以学习的。</p>
+        <p style="margin-top:8px;">📊 <strong>均衡度评估：</strong>${balanceNote}</p>
+        <p style="margin-top:12px;font-style:italic;color:var(--text2);">
+          ✨ 最后想说的话：这份报告不是审判，而是一面镜子。它照见的不是"你们合不合适"，而是"你们在哪些方面已经很好了、在哪些方面还可以更好"。关系从来不是找到完美的人，而是两个人愿意在不够完美的地方，为彼此多走一步。
+        </p>
+      </div>
+    </div>`;
+}
+
+// ==================== ACTION PLAN ====================
+function renderActionPlan(scores){
+  const indexed=scores.map((s,i)=>({s,i})).sort((a,b)=>a.s-b.s);
+  const bottom3=indexed.slice(0,3);
+
+  document.getElementById('actionPlanCard').innerHTML=`
+    <div class="card-header">
+      <span class="ch-icon">📅</span>
+      <span class="ch-title">接下来30天的行动计划</span>
+    </div>
+    <ol class="action-list">
+      <li><strong>第1周：开启一个"感谢仪式"</strong><br>每天睡前，各说一件今天对方让你感到温暖的小事。看起来简单，但这是强化${DIMENSIONS[bottom3[0].i].name}最有效的日常练习。被看见的付出不会变成怨气，被感谢的爱会继续生长。</li>
+      <li><strong>第1周：安排一次"无手机深度对话"</strong><br>30分钟，不设议程，边走边聊。从"最近你在想什么"开始。这是改善${DIMENSIONS[bottom3[1].i].name}最直接的入口。</li>
+      <li><strong>第2周：做一次"未来拼图"练习</strong><br>各画一张5年后理想生活的图，交换对比。不评价、不辩论，就好奇地了解对方的想象。这是${DIMENSIONS[bottom3[2].i].name}建设的第一步。</li>
+      <li><strong>第2周：发起"新人约会"</strong><br>去一个你们从没去过的地方，带上"假装刚认识"的心情。问三个你不知道答案的问题。浪漫续航力的秘密不是等火花，是创造火花。</li>
+      <li><strong>第3周：做"责任大扫除"清单</strong><br>把所有生活责任列出来，各自认领+互相感谢。然后讨论：有没有可以重新分配的？有没有被忽略的？透明是最好的公平。</li>
+      <li><strong>第4周：复盘并庆祝</strong><br>回顾这30天你们做了哪些改变，感受到了什么不同。选一件你们都最喜欢的事情，固定成每月的"关系仪式"。</li>
+    </ol>`;
+}
+
+// ==================== UTILS ====================
 function retakeTest(){
   answers={};
   document.getElementById('resultsPage').classList.remove('active');
@@ -680,24 +1019,24 @@ function retakeTest(){
 
 function shareResult(){
   if(!window._results)return;
-  const {totalScore, scores, levelText} = window._results;
-  const topDim = DIMENSIONS[scores.indexOf(Math.max(...scores))];
-  const lowDim = DIMENSIONS[scores.indexOf(Math.min(...scores))];
+  const {totalScore,avgScore,scores}=window._results;
+  const topDim=DIMENSIONS[scores.indexOf(Math.max(...scores))];
+  const lowDim=DIMENSIONS[scores.indexOf(Math.min(...scores))];
 
-  const text = `💞 我的情侣匹配度深度测评报告
-━━━━━━━━━━━━━━━
-📊 综合得分：${totalScore.toFixed(1)} / 120
-💪 最强维度：${topDim.name}（${Math.max(...scores).toFixed(0)}/10）
-🌱 成长空间：${lowDim.name}（${Math.min(...scores).toFixed(0)}/10）
-━━━━━━━━━━━━━━━
-${levelText}
+  const text=`💞 情侣匹配度深度测评报告
+━━━━━━━━━━━━━━━━━━
+📊 综合：${totalScore.toFixed(1)} / 120（均分 ${avgScore.toFixed(1)}/10）
+💪 最强：${topDim.name}（${Math.max(...scores).toFixed(0)}分）
+🌱 成长：${lowDim.name}（${Math.min(...scores).toFixed(0)}分）
+━━━━━━━━━━━━━━━━━━
+12维度雷达图 + 深度分析报告
 👉 你也来测测看`;
 
   if(navigator.share){
     navigator.share({title:'情侣匹配度深度测评',text}).catch(()=>{});
   }else{
     navigator.clipboard.writeText(text).then(()=>{
-      alert('结果已复制到剪贴板！直接粘贴分享给你的Ta 💕');
+      alert('📋 报告摘要已复制！粘贴分享给你的Ta 💕');
     }).catch(()=>{
       prompt('复制这段文字分享：',text);
     });
