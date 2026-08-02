@@ -1255,16 +1255,10 @@ function downloadImage(){
         useCORS:true,
         logging:false,
       }).then(canvas=>{
-        // Download
+        // Show image in overlay for long-press save (reliable on all mobile browsers)
         canvas.toBlob(blob=>{
           const url=URL.createObjectURL(blob);
-          const a=document.createElement('a');
-          a.href=url;
-          a.download='情侣匹配度测评报告.png';
-          document.body.appendChild(a);a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-          showToast('✅ 图片已保存！去朋友圈/小红书晒图吧');
+          showImageOverlay(url);
         },'image/png');
       }).catch(()=>{
         showToast('⚠️ 生成失败，请截图保存');
@@ -1276,6 +1270,46 @@ function downloadImage(){
       });
     },400);
   },200);
+}
+
+function showImageOverlay(src){
+  // Remove existing overlay
+  const old=document.getElementById('imgPreviewOverlay');
+  if(old)old.remove();
+
+  const isIOS=/iPhone|iPad|iPod/.test(navigator.userAgent);
+
+  const overlay=document.createElement('div');
+  overlay.id='imgPreviewOverlay';
+  overlay.style.cssText=`
+    position:fixed;top:0;left:0;width:100%;height:100%;
+    background:rgba(0,0,0,0.92);z-index:10001;
+    display:flex;flex-direction:column;align-items:center;
+    justify-content:center;padding:16px;
+  `;
+  overlay.innerHTML=`
+    <img src="${src}" style="
+      max-width:95%;max-height:70vh;border-radius:16px;
+      box-shadow:0 8px 40px rgba(0,0,0,0.4);
+      -webkit-touch-callout:default;
+    " id="previewImg" />
+    <div style="
+      margin-top:20px;text-align:center;color:#fff;
+      font-size:0.95rem;font-weight:600;line-height:1.8;
+    ">
+      👆 <strong>长按上方图片</strong><br>
+      <span style="color:#ccc;font-size:0.82rem;">选择「保存图片」即可存入相册</span>
+    </div>
+    <button onclick="document.getElementById('imgPreviewOverlay').remove();" style="
+      margin-top:16px;padding:12px 36px;border-radius:30px;border:none;
+      background:rgba(255,255,255,0.15);color:#fff;
+      font-size:0.92rem;font-weight:600;cursor:pointer;
+    ">关闭</button>
+  `;
+  overlay.addEventListener('click',function(e){
+    if(e.target===overlay)overlay.remove();
+  });
+  document.body.appendChild(overlay);
 }
 
 function showToast(msg){
