@@ -6,6 +6,8 @@
 <title>情侣匹配度深度测评 - 12维度60题</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js">
 </script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js">
+</script>
 <style>
 :root {
   --bg: #fff5f5;
@@ -348,6 +350,50 @@ body{
 }
 .footer a {color:var(--pink);text-decoration:none;}
 
+/* ===== Share Image Card (hidden, used for screenshot) ===== */
+.share-preview {
+  position:fixed;left:-9999px;top:0;width:420px;
+  background:linear-gradient(180deg,#fff5f5 0%,#fff 30%,#fff0f3 100%);
+  padding:28px 24px 22px;font-family:inherit;z-index:-1;
+}
+.share-preview .sp-header{text-align:center;margin-bottom:16px;}
+.share-preview .sp-header .sp-icon{font-size:2rem;}
+.share-preview .sp-header .sp-title{
+  font-size:1.15rem;font-weight:800;margin:4px 0;
+  background:linear-gradient(135deg,#ff6b8a,#ff8a80,#b39ddb);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.share-preview .sp-header .sp-subtitle{font-size:0.72rem;color:#9b7b89;}
+.share-preview .sp-radar{width:300px;height:300px;margin:0 auto 12px;}
+.share-preview .sp-radar canvas{width:100%!important;height:100%!important;}
+.share-preview .sp-stats{display:flex;gap:8px;justify-content:center;margin-bottom:14px;}
+.share-preview .sp-stat{
+  text-align:center;padding:8px 14px;border-radius:10px;
+  background:#fff;border:1px solid #f0d5db;
+}
+.share-preview .sp-stat .sps-val{font-size:1.1rem;font-weight:800;color:#ff6b8a;}
+.share-preview .sp-stat .sps-lbl{font-size:0.65rem;color:#9b7b89;}
+.share-preview .sp-dim-row{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-bottom:14px;}
+.share-preview .sp-dim-tag{
+  font-size:0.6rem;padding:3px 8px;border-radius:10px;
+  font-weight:600;
+}
+.share-preview .sp-footer{
+  text-align:center;font-size:0.65rem;color:#c4a6b2;
+  padding-top:10px;border-top:1px solid #fce4ec;
+}
+
+/* Download toast */
+.toast{
+  position:fixed;bottom:30px;left:50%;transform:translateX(-50%);
+  background:#4a3340;color:#fff;padding:12px 24px;border-radius:30px;
+  font-size:0.88rem;font-weight:600;z-index:9999;
+  animation:toastIn 0.3s ease,toastOut 0.3s ease 2s forwards;
+  pointer-events:none;
+}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(20px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
+@keyframes toastOut{from{opacity:1;}to{opacity:0;}}
+
 .btn-row {display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:24px 0;}
 
 /* ===== RESPONSIVE ===== */
@@ -475,6 +521,7 @@ body{
       <div class="btn-row">
         <button class="btn" onclick="shareResult()">📱 分享给微信好友</button>
         <button class="btn-outline" onclick="copyLink()">📋 复制链接</button>
+        <button class="btn-outline" onclick="downloadImage()" id="btnDownload">🖼️ 保存为图片</button>
       </div>
       <p style="font-size:0.72rem;color:var(--text3);margin-top:12px;" id="copyMsg"></p>
     </div>
@@ -482,6 +529,9 @@ body{
     <div class="btn-row" style="margin-top:8px;">
       <button class="btn-outline" onclick="retakeTest()">🔄 重新测试</button>
     </div>
+
+    <!-- Hidden share preview for screenshot -->
+    <div class="share-preview" id="sharePreview"></div>
 
     <div class="footer">
       💕 情侣匹配度深度测评 v2.0 · 基于关系心理学理论<br>
@@ -1064,6 +1114,118 @@ function shareResult(){
 function copyLink(){
   const url='https://kenbonate.github.io/couple-test/';
   copyToClipboard(url,'链接');
+}
+
+// ==================== DOWNLOAD IMAGE ====================
+function downloadImage(){
+  const btn=document.getElementById('btnDownload');
+  btn.textContent='⏳ 生成中...';
+  btn.style.pointerEvents='none';
+  btn.style.opacity='0.6';
+
+  const {totalScore,avgScore,scores}=window._results;
+  const topDim=DIMENSIONS[scores.indexOf(Math.max(...scores))];
+  const lowDim=DIMENSIONS[scores.indexOf(Math.min(...scores))];
+  const grade=avgScore>=8.5?'S':avgScore>=7.5?'A':avgScore>=6.5?'B':avgScore>=5.5?'C':'D';
+  const gradeColor=avgScore>=8.5?'#ff6b8a':avgScore>=7.5?'#ff8a80':avgScore>=6.5?'#ffb74d':avgScore>=5.5?'#ff8a65':'#a5d6a7';
+
+  // Build share preview HTML
+  const preview=document.getElementById('sharePreview');
+  let dimTagsHtml=DIMENSIONS.map((dim,d)=>{
+    const s=scores[d];const c=s>=8?'#ff6b8a':s>=6.5?'#ff8a80':s>=5?'#ffb74d':'#a5d6a7';
+    const bg=s>=8?'#fff0f3':s>=6.5?'#fff0ed':s>=5?'#fff8ee':'#f0faf1';
+    return `<span class="sp-dim-tag" style="color:${c};background:${bg};">${dim.icon}${dim.name} ${s.toFixed(0)}</span>`;
+  }).join('');
+
+  preview.innerHTML=`
+    <div class="sp-header">
+      <div class="sp-icon">💞</div>
+      <div class="sp-title">情侣匹配度 · 深度测评报告</div>
+      <div class="sp-subtitle">12维度60题 · 雷达图可视化</div>
+    </div>
+    <div class="sp-radar"><canvas id="shareRadarCanvas"></canvas></div>
+    <div class="sp-stats">
+      <div class="sp-stat"><div class="sps-val" style="color:${gradeColor};">${grade}级</div><div class="sps-lbl">综合等级</div></div>
+      <div class="sp-stat"><div class="sps-val">${totalScore.toFixed(0)}</div><div class="sps-lbl">总分/120</div></div>
+      <div class="sp-stat"><div class="sps-val">${avgScore.toFixed(1)}</div><div class="sps-lbl">均分/10</div></div>
+      <div class="sp-stat"><div class="sps-val" style="color:${DIMENSIONS[scores.indexOf(Math.max(...scores))].color};">${Math.max(...scores).toFixed(0)}</div><div class="sps-lbl">最强:${topDim.name}</div></div>
+      <div class="sp-stat"><div class="sps-val" style="color:#a5d6a7;">${Math.min(...scores).toFixed(0)}</div><div class="sps-lbl">成长:${lowDim.name}</div></div>
+    </div>
+    <div class="sp-dim-row">${dimTagsHtml}</div>
+    <div class="sp-footer">🔗 kenbonate.github.io/couple-test · 你也来测测看 💕</div>
+  `;
+
+  // Render mini radar chart in the preview
+  setTimeout(()=>{
+    const ctx=document.getElementById('shareRadarCanvas');
+    if(ctx){
+      new Chart(ctx,{
+        type:'radar',
+        data:{
+          labels:DIMENSIONS.map(d=>d.name),
+          datasets:[{
+            data:scores,
+            backgroundColor:'rgba(255,107,138,0.10)',
+            borderColor:'rgba(255,107,138,0.75)',
+            borderWidth:2,
+            pointBackgroundColor:scores.map((s,i)=>DIMENSIONS[i].color),
+            pointBorderColor:'#fff',
+            pointBorderWidth:2,
+            pointRadius:3,
+          }]
+        },
+        options:{
+          responsive:true,maintainAspectRatio:true,
+          scales:{
+            r:{
+              beginAtZero:true,max:10,min:0,
+              ticks:{stepSize:2,color:'#c4a6b2',backdropColor:'transparent',font:{size:8}},
+              pointLabels:{color:'#4a3340',font:{size:9,weight:'600'}},
+              grid:{color:'rgba(240,213,219,0.5)'},
+              angleLines:{color:'rgba(240,213,219,0.5)'},
+            }
+          },
+          plugins:{legend:{display:false}},
+        }
+      });
+    }
+
+    // Capture with html2canvas
+    setTimeout(()=>{
+      html2canvas(preview,{
+        backgroundColor:'#fff5f5',
+        scale:2,
+        useCORS:true,
+        logging:false,
+      }).then(canvas=>{
+        // Download
+        canvas.toBlob(blob=>{
+          const url=URL.createObjectURL(blob);
+          const a=document.createElement('a');
+          a.href=url;
+          a.download='情侣匹配度测评报告.png';
+          document.body.appendChild(a);a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          showToast('✅ 图片已保存！去朋友圈/小红书晒图吧');
+        },'image/png');
+      }).catch(()=>{
+        showToast('⚠️ 生成失败，请截图保存');
+      }).finally(()=>{
+        btn.textContent='🖼️ 保存为图片';
+        btn.style.pointerEvents='auto';
+        btn.style.opacity='1';
+        preview.innerHTML='';
+      });
+    },400);
+  },200);
+}
+
+function showToast(msg){
+  const t=document.createElement('div');
+  t.className='toast';t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),2500);
 }
 
 function copyToClipboard(text,label='报告摘要'){
