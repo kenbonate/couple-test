@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>情侣匹配度深度测评 - 12维度60题</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg: #0a0a12;
+  --card: #141420;
+  --border: #252538;
+  --text: #e8e8f0;
+  --text2: #8888a0;
+  --pink: #ff5277;
+  --pink-light: #ff7b9b;
+  --purple: #8b6ff7;
+  --blue: #5ea3f7;
+  --gold: #ffb74d;
+  --green: #66d9a0;
+  --dim-1:#ff5277;--dim-2:#ff7b50;--dim-3:#ffb74d;--dim-4:#ffd54f;
+  --dim-5:#66d9a0;--dim-6:#4dd0e1;--dim-7:#5ea3f7;--dim-8:#8b6ff7;
+  --dim-9:#b388ff;--dim-10:#f06292;--dim-11:#4db6ac;--dim-12:#ff8a65;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.7;
+  min-height:100vh;
+}
+body.overflow-hidden{overflow:hidden;}
+
+/* ===== INTRO PAGE ===== */
+.intro-page{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  padding:24px;position:relative;overflow:hidden;
+}
+.intro-page::before{
+  content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;
+  background:radial-gradient(circle at 30% 30%,rgba(255,82,119,0.06) 0%,transparent 50%),
+             radial-gradient(circle at 70% 60%,rgba(139,111,247,0.06) 0%,transparent 50%);
+  animation:bgFloat 20s ease-in-out infinite;
+}
+@keyframes bgFloat{0%,100%{transform:translate(0,0)}50%{transform:translate(-2%,2%)}}
+.intro-card{
+  position:relative;background:var(--card);border:1px solid var(--border);
+  border-radius:24px;padding:48px 40px;max-width:560px;width:100%;
+  text-align:center;backdrop-filter:blur(20px);
+}
+.intro-card .icon{font-size:3.5rem;margin-bottom:16px;}
+.intro-card h1{
+  font-size:1.8rem;font-weight:800;margin-bottom:8px;
+  background:linear-gradient(135deg,var(--pink),var(--purple),var(--blue));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.intro-card .subtitle{color:var(--text2);font-size:0.95rem;margin-bottom:28px;}
+.intro-card .features{
+  display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:28px;
+}
+.intro-card .feature{
+  padding:8px 16px;border-radius:20px;font-size:0.82rem;
+  background:rgba(255,255,255,0.03);border:1px solid var(--border);
+}
+.intro-card .feature span{color:var(--pink);font-weight:600;}
+
+.btn{
+  display:inline-block;padding:14px 40px;border-radius:30px;font-size:1.05rem;
+  font-weight:700;cursor:pointer;border:none;transition:all 0.25s;
+  text-decoration:none;color:#fff;
+  background:linear-gradient(135deg,var(--pink),var(--purple));
+  box-shadow:0 4px 24px rgba(255,82,119,0.3);
+}
+.btn:hover{transform:translateY(-2px);box-shadow:0 6px 32px rgba(255,82,119,0.45);}
+.btn:active{transform:scale(0.97);}
+.intro-card .note{color:var(--text2);font-size:0.78rem;margin-top:20px;}
+
+/* ===== TEST PAGE ===== */
+.test-page{display:none;max-width:720px;margin:0 auto;padding:20px 16px 100px;}
+.test-page.active{display:block;}
+
+.test-header{
+  position:sticky;top:0;z-index:100;background:var(--bg);
+  padding:16px 0;border-bottom:1px solid var(--border);margin-bottom:24px;
+}
+.test-header .progress-info{
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;
+  font-size:0.85rem;color:var(--text2);
+}
+.progress-bar{
+  height:4px;border-radius:2px;background:var(--border);overflow:hidden;
+}
+.progress-bar .fill{
+  height:100%;border-radius:2px;
+  background:linear-gradient(90deg,var(--pink),var(--purple));
+  transition:width 0.3s;
+}
+
+.dim-section{
+  background:var(--card);border:1px solid var(--border);border-radius:16px;
+  padding:24px;margin-bottom:16px;scroll-margin-top:100px;
+}
+.dim-section.current{border-color:var(--purple);box-shadow:0 0 24px rgba(139,111,247,0.1);}
+.dim-header{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
+.dim-num{
+  display:flex;align-items:center;justify-content:center;
+  width:36px;height:36px;border-radius:10px;font-weight:800;font-size:0.9rem;
+  color:#fff;flex-shrink:0;
+}
+.dim-name{font-size:1.15rem;font-weight:700;}
+.dim-desc{color:var(--text2);font-size:0.82rem;margin-bottom:20px;}
+
+.question{margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+.question:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.question .q-text{font-size:0.95rem;margin-bottom:10px;font-weight:500;}
+.options{display:flex;gap:8px;flex-wrap:wrap;}
+.option{
+  flex:1;min-width:70px;text-align:center;padding:10px 8px;
+  border-radius:10px;cursor:pointer;font-size:0.82rem;
+  background:rgba(255,255,255,0.02);border:1.5px solid var(--border);
+  transition:all 0.18s;user-select:none;color:var(--text2);
+}
+.option:hover{border-color:var(--purple);color:var(--text);}
+.option.selected{border-color:var(--purple);background:rgba(139,111,247,0.12);color:var(--text);font-weight:600;}
+.option .opt-label{font-size:0.72rem;color:var(--text2);margin-top:2px;}
+
+/* ===== RESULTS PAGE ===== */
+.results-page{display:none;max-width:800px;margin:0 auto;padding:20px 16px 60px;}
+.results-page.active{display:block;}
+
+.results-header{
+  text-align:center;padding:32px 0 24px;
+}
+.results-header h2{font-size:1.6rem;margin-bottom:6px;}
+.results-header .score{font-size:3rem;font-weight:800;
+  background:linear-gradient(135deg,var(--pink),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+
+.radar-card{
+  background:var(--card);border:1px solid var(--border);border-radius:20px;
+  padding:24px;margin-bottom:20px;
+}
+.radar-card h3{font-size:1.05rem;margin-bottom:16px;text-align:center;}
+.radar-wrap{position:relative;max-width:560px;margin:0 auto;}
+.radar-wrap canvas{width:100%!important;}
+
+.dim-detail-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;
+  margin-bottom:20px;
+}
+.dim-detail{
+  background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:16px;text-align:center;
+}
+.dim-detail .dd-score{font-size:1.6rem;font-weight:800;margin-bottom:2px;}
+.dim-detail .dd-name{font-size:0.88rem;font-weight:600;margin-bottom:4px;}
+.dim-detail .dd-bar{
+  height:4px;border-radius:2px;background:var(--border);margin-top:8px;overflow:hidden;
+}
+.dim-detail .dd-bar .fill{height:100%;border-radius:2px;transition:width 0.6s;}
+
+/* Advice */
+.advice-card{
+  background:var(--card);border:1px solid var(--border);border-radius:16px;
+  padding:24px;margin-bottom:16px;
+}
+.advice-card h3{font-size:1.05rem;margin-bottom:12px;}
+.advice-item{display:flex;gap:10px;padding:8px 0;font-size:0.9rem;align-items:flex-start;}
+.advice-item .ai-tag{
+  padding:2px 8px;border-radius:6px;font-size:0.72rem;font-weight:700;flex-shrink:0;
+  margin-top:3px;
+}
+.ai-tag.strength{background:rgba(102,217,160,0.15);color:var(--green);}
+.ai-tag.weakness{background:rgba(255,82,119,0.15);color:var(--pink);}
+.ai-tag.tip{background:rgba(139,111,247,0.15);color:var(--purple);}
+
+.btn-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:24px 0;}
+.btn-outline{
+  display:inline-block;padding:12px 28px;border-radius:30px;font-size:0.95rem;
+  font-weight:600;cursor:pointer;transition:all 0.2s;
+  background:transparent;border:1.5px solid var(--border);color:var(--text);
+}
+.btn-outline:hover{border-color:var(--purple);background:rgba(139,111,247,0.06);}
+
+.footer{text-align:center;padding:24px;color:var(--text2);font-size:0.75rem;}
+</style>
+</head>
+<body>
+
+<!-- ==================== INTRO PAGE ==================== -->
+<div class="intro-page" id="introPage">
+  <div class="intro-card">
+    <div class="icon">💞</div>
+    <h1>情侣匹配度 · 深度测评</h1>
+    <p class="subtitle">12个维度 × 60道情境题 × 雷达图可视化<br>不只是测"合不合"，而是看清楚"哪里合、哪里需要磨合"</p>
+    <div class="features">
+      <div class="feature"><span>12</span> 全新维度</div>
+      <div class="feature"><span>60</span> 道情境题</div>
+      <div class="feature"><span>雷达图</span> 可视化</div>
+      <div class="feature"><span>2分钟</span> 完成</div>
+    </div>
+    <button class="btn" onclick="startTest()">⚡ 开始测试</button>
+    <p class="note">📋 每题按真实感受选择，没有对错<br>👫 建议你和伴侣各自测完再对比</p>
+  </div>
+</div>
+
+<!-- ==================== TEST PAGE ==================== -->
+<div class="test-page" id="testPage">
+  <div class="test-header">
+    <div class="progress-info">
+      <span id="progressLabel">第 1/12 维度</span>
+      <span id="questionCount">0/60 题</span>
+    </div>
+    <div class="progress-bar"><div class="fill" id="progressFill" style="width:0%"></div></div>
+  </div>
+  <div id="questionsContainer"></div>
+  <div style="text-align:center;padding:24px;">
+    <button class="btn" id="submitBtn" onclick="submitTest()" style="opacity:0.4;pointer-events:none;">
+      📊 生成我的测评报告
+    </button>
+    <p style="color:var(--text2);font-size:0.78rem;margin-top:8px;" id="submitHint">
+      ⬆ 请完成全部 60 题后提交
+    </p>
+  </div>
+</div>
+
+<!-- ==================== RESULTS PAGE ==================== -->
+<div class="results-page" id="resultsPage">
+  <div class="results-header">
+    <h2>📊 你的情侣匹配度报告</h2>
+    <div class="score" id="totalScore">0</div>
+    <p style="color:var(--text2);">综合匹配指数（满分 120）</p>
+  </div>
+
+  <div class="radar-card">
+    <h3>🎯 12维度雷达图</h3>
+    <div class="radar-wrap"><canvas id="radarChart"></canvas></div>
+  </div>
+
+  <div class="dim-detail-grid" id="dimDetails"></div>
+
+  <div class="advice-card" id="adviceCard"></div>
+
+  <div class="btn-row">
+    <button class="btn" onclick="retakeTest()">🔄 重新测试</button>
+    <button class="btn-outline" onclick="shareResult()">📤 分享结果</button>
+  </div>
+
+  <div class="footer">
+    情侣匹配度深度测评 v1.0 · 仅供娱乐参考 · 真正的关系需要用心经营 💕
+  </div>
+</div>
+
+<script>
+// ==================== TEST DATA ====================
+const DIMENSIONS = [
+  {
+    id:'d1',name:'情绪同频力',color:'#ff5277',
+    desc:'你能多快感知并回应伴侣的情绪变化？',
+    icon:'🎭',
+    questions:[
+      {q:'Ta还没开口说话，你就能感觉到Ta今天情绪不对。',opts:['完全不能','偶尔能','一半一半','经常能','几乎每次都能']},
+      {q:'当Ta向你倾诉烦恼时，你更多是"帮Ta解决问题"而非"安慰情绪"。',opts:['总是解决问题','经常','一半一半','偶尔','总是先安慰'],reverse:true},
+      {q:'你们在一起时，一个人情绪低落，另一个人也会莫名变得低落。',opts:['从不会','很少','有时','经常','几乎总是']},
+      {q:'Ta在你面前哭了，你知道该说什么、做什么。',opts:['完全不知道','有点慌','勉强应对','比较从容','完全知道']},
+      {q:'即使Ta嘴上说"没事"，你也能判断出是真没事还是假没事。',opts:['完全判断不了','偶尔能','一半一半','经常能','几乎每次都能']},
+    ]
+  },
+  {
+    id:'d2',name:'冲突转化力',color:'#ff7b50',
+    desc:'争吵后，你们的关系是变更好还是更糟？',
+    icon:'⚡',
+    questions:[
+      {q:'吵架时，你们会说伤害对方的话。',opts:['每次都这样','经常','偶尔','很少','从来不会'],reverse:true},
+      {q:'吵完架之后，你们会复盘"我们刚才为什么会吵起来"。',opts:['从不','很少','偶尔','经常','每次都会']},
+      {q:'Ta指出你的问题时，你的第一反应是防御/反驳而非倾听。',opts:['总是防御','经常','一半一半','偶尔','总是先听'],reverse:true},
+      {q:'每次吵架后，你们的关系反而比之前更了解彼此了。',opts:['从没有','很少','偶尔','经常','每次都是']},
+      {q:'你们有约定过"吵架规则"（比如不翻旧账、不人身攻击、不冷战超过24小时）。',opts:['完全没有','想过但没做','有模糊共识','有明确约定','严格执行']},
+    ]
+  },
+  {
+    id:'d3',name:'深度对话力',color:'#ffb74d',
+    desc:'除了"吃什么""今天怎么样"，你们还能聊什么？',
+    icon:'💬',
+    questions:[
+      {q:'你们能就一个抽象话题（如人生的意义、自由、死亡）聊超过30分钟。',opts:['从没有','很少','偶尔','经常','非常频繁']},
+      {q:'你向Ta分享一个深刻的想法时，Ta会认真回应而非敷衍带过。',opts:['总是敷衍','经常敷衍','一半一半','比较认真','非常认真']},
+      {q:'你们会聊到彼此的原生家庭、童年经历以及它们如何塑造了今天的自己。',opts:['从未聊过','浅尝辄止','聊过一些','聊得较深','非常深入']},
+      {q:'即使意见不同，你们也能在讨论中保持好奇而非对立。',opts:['总是对立','经常对立','一半一半','多数好奇','总是好奇']},
+      {q:'你觉得自己最隐秘的想法，Ta是那个你能放心分享的人。',opts:['完全不是','不太是','部分算是','基本是','绝对是']},
+    ]
+  },
+  {
+    id:'d4',name:'信任松弛力',color:'#ffd54f',
+    desc:'不看对方手机、不查岗、不胡思乱想——这种松弛感你们有多少？',
+    icon:'🧘',
+    questions:[
+      {q:'Ta长时间不回消息时，你的第一反应是担心出事而非怀疑出轨。',opts:['总是往坏处想','经常怀疑','一半一半','多数担心安全','从不怀疑']},
+      {q:'你们可以互相解锁对方的手机，但从来不会真的去翻。',opts:['经常互相翻','偶尔会翻','不确定','基本不翻','完全不翻']},
+      {q:'Ta和异性好友单独吃饭，你内心毫无波澜。',opts:['完全做不到','很不舒服','勉强接受','基本OK','完全OK']},
+      {q:'你会因为Ta没有及时报备行踪而生气。',opts:['每次都生气','经常','偶尔','很少','从不'],reverse:true},
+      {q:'你们各自有自己的朋友圈和社交活动，不互相绑定。',opts:['完全绑定','很少独立','一半一半','比较独立','非常独立']},
+    ]
+  },
+  {
+    id:'d5',name:'亲密节奏感',color:'#66d9a0',
+    desc:'黏而不腻、独而不冷——这个分寸你们拿捏得如何？',
+    icon:'🎵',
+    questions:[
+      {q:'你们对"多久见一次面/视频一次"的需求程度基本一致。',opts:['差异很大','有些差异','一半一半','比较一致','完全一致']},
+      {q:'当你需要独处时，Ta能理解并给你空间，不会觉得被冷落。',opts:['完全不能','勉强接受','有时能','多数能','完全理解']},
+      {q:'Ta想要亲密贴贴时，你即使当下不想，也能温和回应而非冷漠推开。',opts:['总是推开','经常冷漠','看心情','多数温和','总是温和']},
+      {q:'你们之间有一方觉得"太黏了"，另一方觉得"不够亲密"。',opts:['总是这样','经常','偶尔','很少','从没有'],reverse:true},
+      {q:'你们能自然地讨论"我们最近是不是太黏/太疏远了"。',opts:['从没讨论过','想过但没说','偶尔提及','比较自然','非常自然']},
+    ]
+  },
+  {
+    id:'d6',name:'价值观引力',color:'#4dd0e1',
+    desc:'钱怎么花、家怎么管、人生怎么过——底层共识有多强？',
+    icon:'🧲',
+    questions:[
+      {q:'对于"钱应该花在体验上还是存起来"，你们的理念基本一致。',opts:['完全相反','差异较大','一半一半','比较一致','高度一致']},
+      {q:'关于要不要孩子、什么时候要、怎么教育孩子，你们聊过且有共识。',opts:['从没聊过','聊过但分歧大','模糊讨论过','基本有共识','完全一致']},
+      {q:'你们对待双方父母的方式让彼此都感到舒服。',opts:['很不舒服','有些不适','勉强OK','比较舒服','非常舒服']},
+      {q:'在"什么算是出轨/越界"的定义上，你们看法一致。',opts:['差异很大','有些分歧','没讨论过','比较一致','高度一致']},
+      {q:'你们对"好的生活"的想象是相似的（比如城市vs田园、奋斗vs躺平）。',opts:['完全相反','差异很大','部分重叠','比较相似','几乎一样']},
+    ]
+  },
+  {
+    id:'d7',name:'日常默契度',color:'#5ea3f7',
+    desc:'无需言语的配合——从点菜到做家务，有多少心照不宣？',
+    icon:'🤝',
+    questions:[
+      {q:'你们一起做饭/做家务时，不需要分配任务就能自然配合。',opts:['完全不能','经常混乱','偶尔配合','比较默契','非常默契']},
+      {q:'Ta还没开口，你已经知道Ta想点什么菜/喝什么饮料。',opts:['完全猜不到','偶尔猜对','一半一半','经常猜对','几乎总能']},
+      {q:'你们对"家里应该多干净/多整洁"的标准基本一致。',opts:['完全相反','差异很大','一半一半','比较一致','完全一致']},
+      {q:'旅行时，你们的节奏偏好（早起暴走vs睡到自然醒）能自然协调。',opts:['总是冲突','经常冲突','需要磨合','比较协调','非常协调']},
+      {q:'你们有属于自己的"暗号"——一个眼神、一个词就能懂对方在说什么。',opts:['完全没有','有一点点','有一些','挺多的','非常多']},
+    ]
+  },
+  {
+    id:'d8',name:'成长共生力',color:'#8b6ff7',
+    desc:'你们是彼此的加速器还是舒适区？',
+    icon:'🌱',
+    questions:[
+      {q:'和Ta在一起后，你觉得自己变成了更好的人。',opts:['完全没变好','变化不大','有一些变好','明显变好','脱胎换骨']},
+      {q:'当你想学新技能/换工作/创业时，Ta是第一个支持你的人。',opts:['总是反对','经常泼冷水','不置可否','多数支持','全力支持']},
+      {q:'你们会互相推荐好书/好课/好内容，一起学习和讨论。',opts:['从没有','很少','偶尔','经常','非常频繁']},
+      {q:'Ta能坦诚地指出你的缺点，且让你愿意接受而非感到被攻击。',opts:['完全做不到','做得不太好','偶尔做到','多数做到','总是如此']},
+      {q:'过去一年里，你们一起完成了一件有挑战性的事（学习/运动/存钱/项目）。',opts:['一件都没有','想过但没做','在努力中','完成了一些','完成了很多']},
+    ]
+  },
+  {
+    id:'d9',name:'责任共担力',color:'#b388ff',
+    desc:'当压力来临时，你们是并肩作战还是各自为政？',
+    icon:'🛡️',
+    questions:[
+      {q:'遇到经济压力时，你们会一起商量对策而非互相指责。',opts:['总是互相指责','经常指责','一半一半','多数商量','总是一起面对']},
+      {q:'家务/育儿/照顾家人的责任在你们之间分配得比较公平。',opts:['完全不公平','不太公平','勉强公平','比较公平','非常公平']},
+      {q:'一方遇到困难（失业/疾病/情绪低谷），另一方会主动分担更多。',opts:['完全不会','偶尔帮一下','会但勉强','比较主动','非常主动']},
+      {q:'做重大决定（搬家、换工作、大额消费）时，你们会真正商量而非通知对方。',opts:['总是单方面决定','经常先斩后奏','有时商量','多数商量','总是商量']},
+      {q:'你们对未来有共同的财务规划（存钱目标、保险、投资等）。',opts:['完全没有','想但没做','模糊讨论过','有大致规划','有明确规划']},
+    ]
+  },
+  {
+    id:'d10',name:'浪漫续航力',color:'#f06292',
+    desc:'热恋期过后，你们还能持续为关系注入新鲜感吗？',
+    icon:'✨',
+    questions:[
+      {q:'你们会有意识地创造"约会感"（而非只是待在一起刷手机）。',opts:['从没有','很少','偶尔','经常','非常频繁']},
+      {q:'你上一次给Ta准备小惊喜（卡片/礼物/特别安排）是什么时候？',opts:['一年以上','半年左右','三个月内','一个月内','一周内']},
+      {q:'你们的亲密生活（拥抱/亲吻/性生活）让你感到满足。',opts:['完全不满足','不太满足','一般','比较满足','非常满足']},
+      {q:'即使在一起很久了，你仍然会被Ta某个瞬间"击中"（觉得Ta很迷人）。',opts:['很久没有了','极少','偶尔','经常','几乎每天']},
+      {q:'你们有一项共同的、定期一起做的爱好（运动/游戏/旅行/做饭等）。',opts:['完全没有','偶尔有','有一项','有两项','三项以上']},
+    ]
+  },
+  {
+    id:'d11',name:'危机韧性力',color:'#4db6ac',
+    desc:'当外部世界对你们的关系施加压力时，你们是更紧还是更散？',
+    icon:'💪',
+    questions:[
+      {q:'外界有人不看好你们的关系（家人反对/朋友质疑），你们会更团结。',opts:['会被动摇','有些影响','不确定','更团结','非常团结']},
+      {q:'异地/异国一段时间对你们的关系影响有多大？',opts:['完全撑不住','有很大影响','有些影响','影响很小','完全没问题']},
+      {q:'你们经历过的最大的关系危机让你们的感情变得更强了。',opts:['变得更差了','没有变化','差点分手','反而更好了','脱胎换骨']},
+      {q:'当Ta遭受外界打击（工作受挫/被人误解），你知道怎么陪Ta走出来。',opts:['完全不知道','有些茫然','勉强应对','比较知道','非常清楚']},
+      {q:'你对你们关系的未来"能扛过风雨"有多大的信心？',opts:['毫无信心','信心不足','一半一半','比较有信心','非常有信心']},
+    ]
+  },
+  {
+    id:'d12',name:'愿景交汇度',color:'#ff8a65',
+    desc:'你画的未来和Ta画的未来，有多少重叠？',
+    icon:'🎯',
+    questions:[
+      {q:'你们对"5年后我们的生活是什么样子"有过具体的想象和讨论。',opts:['从没讨论过','偶尔提到','聊过但模糊','比较具体','非常具体']},
+      {q:'你对未来生活的想象中，Ta明确在其中且角色清晰。',opts:['不确定Ta在不在','模糊存在','应该有','肯定有','无法想象没有Ta']},
+      {q:'你们有共同的人生目标（比如一起买房、一起旅行某个地方、一起创业）。',opts:['完全没有','有一些模糊的','有1-2个','有3-4个','有很多']},
+      {q:'如果你们对未来有分歧，你们能建设性地讨论并找到折中方案。',opts:['完全不能','很难讨论','勉强能','比较顺畅','非常顺畅']},
+      {q:'想到和Ta共度余生，你的感觉是？',opts:['感到恐惧','有些犹豫','不确定','期待','充满期待']},
+    ]
+  },
+];
+
+// ==================== STATE ====================
+let answers = {}; // key: 'd0_q0' -> 1-5
+
+// ==================== BUILD TEST ====================
+function startTest(){
+  document.getElementById('introPage').style.display='none';
+  const tp = document.getElementById('testPage');
+  tp.classList.add('active');
+  buildQuestions();
+  window.scrollTo(0,0);
+}
+
+function buildQuestions(){
+  const container = document.getElementById('questionsContainer');
+  let html='';
+  let qIdx=0;
+
+  DIMENSIONS.forEach((dim,d)=>{
+    html+=`<div class="dim-section" id="dimSection${d}">
+      <div class="dim-header">
+        <div class="dim-num" style="background:${dim.color}">${d+1}</div>
+        <div>
+          <div class="dim-name">${dim.icon} ${dim.name}</div>
+        </div>
+      </div>
+      <div class="dim-desc">${dim.desc}</div>`;
+
+    dim.questions.forEach((q,qid)=>{
+      const key = `${d}_${qid}`;
+      html+=`<div class="question">
+        <div class="q-text">${qid+1}. ${q.q}</div>
+        <div class="options" data-key="${key}">`;
+      q.opts.forEach((opt,oidx)=>{
+        html+=`<div class="option" data-key="${key}" data-val="${oidx+1}" onclick="selectOption(this,'${key}',${oidx+1},${d})">
+          ${oidx+1}
+          <span class="opt-label">${opt}</span>
+        </div>`;
+      });
+      html+=`</div></div>`;
+      qIdx++;
+    });
+
+    html+=`</div>`;
+  });
+
+  container.innerHTML=html;
+  updateProgress();
+}
+
+function selectOption(el,key,val,dimIdx){
+  // Clear siblings
+  const parent = el.parentElement;
+  parent.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  answers[key]=val;
+
+  // Update question count
+  updateProgress();
+
+  // Check if all questions in this dimension are answered
+  checkDimComplete(dimIdx);
+}
+
+function checkDimComplete(dimIdx){
+  const section = document.getElementById('dimSection'+dimIdx);
+  if(!section)return;
+  let allAnswered=true;
+  DIMENSIONS[dimIdx].questions.forEach((q,qid)=>{
+    if(!answers[`${dimIdx}_${qid}`])allAnswered=false;
+  });
+  if(allAnswered) section.classList.add('current');
+  else section.classList.remove('current');
+}
+
+function updateProgress(){
+  const total = 60;
+  const answered = Object.keys(answers).length;
+  document.getElementById('questionCount').textContent=answered+'/60 题';
+  document.getElementById('progressFill').style.width=(answered/total*100)+'%';
+
+  const submitBtn = document.getElementById('submitBtn');
+  const submitHint = document.getElementById('submitHint');
+  if(answered >= total){
+    submitBtn.style.opacity='1';
+    submitBtn.style.pointerEvents='auto';
+    submitHint.textContent='✅ 全部完成！点击生成报告';
+  } else {
+    submitBtn.style.opacity='0.4';
+    submitBtn.style.pointerEvents='none';
+    submitHint.textContent=`⬆ 还剩 ${total-answered} 题，请继续作答`;
+  }
+}
+
+// ==================== SUBMIT ====================
+function submitTest(){
+  const total = 60;
+  const answered = Object.keys(answers).length;
+  if(answered < total){
+    alert(`还有 ${total-answered} 道题没答完哦～请完成全部题目再提交`);
+    return;
+  }
+
+  // Calculate scores
+  const scores = DIMENSIONS.map((dim,d)=>{
+    let raw=0;
+    dim.questions.forEach((q,qid)=>{
+      let val = answers[`${d}_${qid}`] || 3;
+      // Handle reverse items
+      if(q.reverse) val = 6 - val;
+      raw += val;
+    });
+    // Normalize: raw 5-25 -> 0-10
+    return Math.round((raw - 5) / 20 * 100) / 10; // 0.0-10.0
+  });
+
+  const totalScore = Math.round(scores.reduce((a,b)=>a+b,0) * 10) / 10;
+  const totalPossible = 120;
+
+  // Switch to results
+  document.getElementById('testPage').classList.remove('active');
+  const rp = document.getElementById('resultsPage');
+  rp.classList.add('active');
+  window.scrollTo(0,0);
+
+  // Total score
+  document.getElementById('totalScore').textContent = totalScore.toFixed(1);
+
+  // Determine level
+  let levelEmoji, levelText;
+  if(totalScore >= 100){levelEmoji='🌟';levelText='灵魂伴侣级——你们之间的共鸣远超常人';}
+  else if(totalScore >= 85){levelEmoji='💖';levelText='高度契合——有很好的基础，少数维度需磨合';}
+  else if(totalScore >= 70){levelEmoji='💛';levelText='良好匹配——部分维度亮眼，部分需刻意练习';}
+  else if(totalScore >= 55){levelEmoji='🔄';levelText='需要磨合——差异不可怕，可怕的是不愿意沟通';}
+  else{levelEmoji='🌱';levelText='差异较大——但如果愿意，差异也可以成为成长的土壤';}
+  document.getElementById('totalScore').insertAdjacentHTML('afterend',
+    `<p style="margin-top:4px;font-size:0.95rem;">${levelEmoji} ${levelText}</p>`);
+
+  // Radar chart
+  renderRadar(scores);
+
+  // Dimension details
+  renderDimDetails(scores);
+
+  // Advice
+  renderAdvice(scores);
+
+  // Store for share
+  window._results = {scores, totalScore, levelText};
+}
+
+function renderRadar(scores){
+  const ctx = document.getElementById('radarChart').getContext('2d');
+  // Destroy previous
+  if(window._radarChart) window._radarChart.destroy();
+
+  window._radarChart = new Chart(ctx, {
+    type:'radar',
+    data:{
+      labels: DIMENSIONS.map(d=>d.name),
+      datasets:[{
+        label:'你的得分',
+        data:scores,
+        backgroundColor:'rgba(139,111,247,0.15)',
+        borderColor:'rgba(139,111,247,0.9)',
+        borderWidth:2.5,
+        pointBackgroundColor: scores.map((s,i)=>DIMENSIONS[i].color),
+        pointBorderColor:'#fff',
+        pointBorderWidth:2,
+        pointRadius:5,
+        pointHoverRadius:8,
+      }]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:true,
+      aspectRatio:1,
+      scales:{
+        r:{
+          beginAtZero:true,
+          max:10,
+          min:0,
+          ticks:{stepSize:2,color:'#8888a0',backdropColor:'transparent',font:{size:10}},
+          pointLabels:{color:'#e8e8f0',font:{size:12,weight:'600'}},
+          grid:{color:'rgba(255,255,255,0.08)'},
+          angleLines:{color:'rgba(255,255,255,0.08)'},
+        }
+      },
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'#141420',
+          borderColor:'#252538',
+          borderWidth:1,
+          callbacks:{
+            label:ctx=>` ${ctx.raw.toFixed(1)} / 10`
+          }
+        }
+      }
+    }
+  });
+}
+
+function renderDimDetails(scores){
+  const container = document.getElementById('dimDetails');
+  container.innerHTML = DIMENSIONS.map((dim,d)=>{
+    const s = scores[d];
+    let emoji;
+    if(s>=8)emoji='🌟';else if(s>=6.5)emoji='💛';else if(s>=5)emoji='🔄';else emoji='🌱';
+    return `<div class="dim-detail">
+      <div class="dd-score" style="color:${dim.color}">${s.toFixed(1)}<span style="font-size:0.7rem;color:var(--text2)">/10</span></div>
+      <div class="dd-name">${emoji} ${dim.name}</div>
+      <div class="dd-bar"><div class="fill" style="width:${s*10}%;background:${dim.color}"></div></div>
+      <div style="font-size:0.72rem;color:var(--text2);margin-top:4px;">${dim.desc}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderAdvice(scores){
+  // Find top 3 and bottom 3
+  const indexed = scores.map((s,i)=>({score:s, dim:DIMENSIONS[i], idx:i}));
+  indexed.sort((a,b)=>b.score-a.score);
+  const top3 = indexed.slice(0,3);
+  const bottom3 = indexed.slice(-3).reverse();
+
+  let html = '<h3>📋 个性化分析报告</h3>';
+
+  html += '<p style="font-weight:600;color:var(--green);margin-bottom:8px;">💪 你们的关系优势</p>';
+  top3.forEach((item,i)=>{
+    html += `<div class="advice-item">
+      <span class="ai-tag strength">优势${i+1}</span>
+      <span><strong>${item.dim.name}（${item.score.toFixed(1)}分）</strong> — ${item.dim.desc} 这是你们关系的"压舱石"，继续保持并善用这些优势去弥补弱项。</span>
+    </div>`;
+  });
+
+  html += '<p style="font-weight:600;color:var(--pink);margin:16px 0 8px;">🎯 需要关注的领域</p>';
+  bottom3.forEach((item,i)=>{
+    const tips = getTip(item.dim.id);
+    html += `<div class="advice-item">
+      <span class="ai-tag weakness">关注${i+1}</span>
+      <span><strong>${item.dim.name}（${item.score.toFixed(1)}分）</strong> — ${tips}</span>
+    </div>`;
+  });
+
+  html += '<p style="font-weight:600;color:var(--purple);margin:16px 0 8px;">💡 行动建议</p>';
+  html += `<div class="advice-item">
+    <span class="ai-tag tip">建议</span>
+    <span>选一个你们得分最低的维度，这周专门聊一次——不是"解决问题"，就是<strong>好奇地了解对方为什么那样想</strong>。你会发现，了解本身就是治愈的开始。</span>
+  </div>`;
+
+  document.getElementById('adviceCard').innerHTML=html;
+}
+
+function getTip(dimId){
+  const tips={
+    d1:'尝试练习"反射式倾听"——在回应之前，先复述一遍对方说的内容+"我听到的是…对吗？"。这能让情绪同频力大幅提升。',
+    d2:'约定"暂停暗号"——当一方感觉情绪要失控时，说一个词（比如"黄色"）双方暂停15分钟再继续。冲突不是敌人，失控才是。',
+    d3:'每周安排一次"无手机散步"——边走边聊，不设话题。最深的对话往往发生在不经意的时刻。',
+    d4:'练习"不查岗24小时"——选一天完全不追问对方行踪，观察自己的焦虑从哪来。信任松弛是可以训练的肌肉。',
+    d5:'做一个"亲密需求温度计"——每周互相打分1-5"这周黏度够吗"，然后调整下周的相处节奏。',
+    d6:'做一次"价值观清单"对话——每人写下人生中最重要的5件事，然后对比讨论。分歧本身不可怕，回避分歧才可怕。',
+    d7:'建立"默契暗号"——为常见场景（我想走了/我超开心/我需要你）各设计一个手势或词，默契是可以主动培养的。',
+    d8:'成为彼此的"成长教练"——每月一次互相问"你最近在学什么？我能怎么支持你？"。最好的关系是互相成就。',
+    d9:'做一个"责任清单"——把生活中的所有责任列出来，各自认领+互相感谢。被看见的付出才不会变成怨气。',
+    d10:'每月一次"新人约会"——假装你们刚认识，去一个没去过的地方，聊没聊过的话题。新鲜感不是等来的，是创造出来的。',
+    d11:'预设"最坏情况"——如果异地一年、如果一方失业、如果家人反对…提前讨论应对方案。有预案的危机就只是"问题"，不是"灾难"。',
+    d12:'做一个"未来拼图"——各自画理想中的5年后生活，然后对比重叠部分。重叠就是你们共同的北极星。',
+  };
+  return tips[dimId] || '多花时间在这个维度上刻意练习，小进步积累成大改变。';
+}
+
+function retakeTest(){
+  answers={};
+  document.getElementById('resultsPage').classList.remove('active');
+  document.getElementById('testPage').classList.add('active');
+  buildQuestions();
+  window.scrollTo(0,0);
+}
+
+function shareResult(){
+  if(!window._results)return;
+  const {totalScore, scores, levelText} = window._results;
+  const topDim = DIMENSIONS[scores.indexOf(Math.max(...scores))];
+  const lowDim = DIMENSIONS[scores.indexOf(Math.min(...scores))];
+
+  const text = `💞 我的情侣匹配度深度测评报告
+━━━━━━━━━━━━━━━
+📊 综合得分：${totalScore.toFixed(1)} / 120
+💪 最强维度：${topDim.name}（${Math.max(...scores).toFixed(0)}/10）
+🌱 成长空间：${lowDim.name}（${Math.min(...scores).toFixed(0)}/10）
+━━━━━━━━━━━━━━━
+${levelText}
+👉 你也来测测看`;
+
+  if(navigator.share){
+    navigator.share({title:'情侣匹配度深度测评',text}).catch(()=>{});
+  }else{
+    navigator.clipboard.writeText(text).then(()=>{
+      alert('结果已复制到剪贴板！直接粘贴分享给你的Ta 💕');
+    }).catch(()=>{
+      prompt('复制这段文字分享：',text);
+    });
+  }
+}
+</script>
+</body>
+</html>
