@@ -460,10 +460,27 @@ body{
     <!-- Action Plan -->
     <div class="card" id="actionPlanCard"></div>
 
-    <!-- Buttons -->
-    <div class="btn-row">
-      <button class="btn" onclick="retakeTest()">🔄 重新测试</button>
-      <button class="btn-outline" onclick="shareResult()">📤 分享给Ta</button>
+    <!-- Share Section -->
+    <div class="card" style="text-align:center;">
+      <div class="card-header" style="justify-content:center;">
+        <span class="ch-icon">📤</span>
+        <span class="ch-title">分享这份报告给你的Ta</span>
+      </div>
+      <p style="font-size:0.85rem;color:var(--text2);margin-bottom:12px;">
+        Ta打开链接后各自独立测试，然后对比两份雷达图
+      </p>
+      <div style="background:var(--pink-light);border-radius:12px;padding:12px 16px;margin-bottom:16px;word-break:break-all;">
+        <code style="font-size:0.85rem;color:var(--pink);font-weight:600;">https://kenbonate.github.io/couple-test/</code>
+      </div>
+      <div class="btn-row">
+        <button class="btn" onclick="shareResult()">📱 分享给微信好友</button>
+        <button class="btn-outline" onclick="copyLink()">📋 复制链接</button>
+      </div>
+      <p style="font-size:0.72rem;color:var(--text3);margin-top:12px;" id="copyMsg"></p>
+    </div>
+
+    <div class="btn-row" style="margin-top:8px;">
+      <button class="btn-outline" onclick="retakeTest()">🔄 重新测试</button>
     </div>
 
     <div class="footer">
@@ -1022,6 +1039,7 @@ function shareResult(){
   const {totalScore,avgScore,scores}=window._results;
   const topDim=DIMENSIONS[scores.indexOf(Math.max(...scores))];
   const lowDim=DIMENSIONS[scores.indexOf(Math.min(...scores))];
+  const url='https://kenbonate.github.io/couple-test/';
 
   const text=`💞 情侣匹配度深度测评报告
 ━━━━━━━━━━━━━━━━━━
@@ -1030,17 +1048,54 @@ function shareResult(){
 🌱 成长：${lowDim.name}（${Math.min(...scores).toFixed(0)}分）
 ━━━━━━━━━━━━━━━━━━
 12维度雷达图 + 深度分析报告
-👉 你也来测测看`;
+👉 你也来测测：${url}`;
 
+  // Use Web Share API (works on mobile Safari/Chrome, includes URL)
   if(navigator.share){
-    navigator.share({title:'情侣匹配度深度测评',text}).catch(()=>{});
-  }else{
-    navigator.clipboard.writeText(text).then(()=>{
-      alert('📋 报告摘要已复制！粘贴分享给你的Ta 💕');
-    }).catch(()=>{
-      prompt('复制这段文字分享：',text);
+    navigator.share({title:'情侣匹配度深度测评',text:text,url:url}).catch(()=>{
+      // Fallback: copy to clipboard
+      copyToClipboard(text);
     });
+  }else{
+    copyToClipboard(text);
   }
+}
+
+function copyLink(){
+  const url='https://kenbonate.github.io/couple-test/';
+  copyToClipboard(url,'链接');
+}
+
+function copyToClipboard(text,label='报告摘要'){
+  const msg=document.getElementById('copyMsg');
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(text).then(()=>{
+      msg.textContent='✅ '+label+'已复制！去微信粘贴发给Ta吧 💕';
+      msg.style.color='#66bb6a';
+      setTimeout(()=>{msg.textContent='';},3000);
+    }).catch(()=>{
+      fallbackCopy(text,label);
+    });
+  }else{
+    fallbackCopy(text,label);
+  }
+}
+
+function fallbackCopy(text,label){
+  const msg=document.getElementById('copyMsg');
+  const ta=document.createElement('textarea');
+  ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';
+  document.body.appendChild(ta);ta.select();
+  try{
+    document.execCommand('copy');
+    msg.textContent='✅ '+label+'已复制！去微信粘贴发给Ta吧 💕';
+    msg.style.color='#66bb6a';
+  }catch(e){
+    msg.textContent='⚠️ 复制失败，请手动复制上方链接';
+    msg.style.color='#ff8a80';
+  }
+  document.body.removeChild(ta);
+  setTimeout(()=>{msg.textContent='';},3000);
 }
 </script>
 </body>
